@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794175916",
+  "timestamp": "2026-11-08T22:13:17Z",
+  "title": "Resilience cycle: churn (#5211) \u2014 concurrency fail + hsctl session death",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-CHURN (connection churn resilience, upstream #5211) + regressions TV-ENV, TV-LAT, TV-FLEET",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794175916
+ },
+ "results": [
+  {
+   "id": "NX-CHURN",
+   "title": "Serving through connection churn (upstream #5211)",
+   "desc": "Exec/DNS/concurrency storm; sandbox must stay alive and keep serving",
+   "ok": false,
+   "detail": "25 rapid execs ok=25/25; 30x DNS loop clean; 6-wide concurrent all=False; still-Ready=True; post-storm exec ok | diagnostic: owner-token Unauthorized (hsctl session ended 22:12:39Z); retry sandbox timed out reaching Ready in same window",
+   "prose": "Upstream #5211 promises sandboxes survive transient accept errors. I stressed one sandbox with 25 rapid execs (all served), a 30-iteration DNS loop (clean), and then a 6-wide concurrent fan-out \u2014 every concurrent stream failed while the sandbox stayed Ready, and a diagnostic retry sandbox timed out reaching Ready in the same window. Sequential serving is solid; the concurrency failure clustered with a gateway-pressure window around 22:10-22:15Z, so I'm recording this as a fail with an inconclusive concurrency verdict rather than a resilience pass. Worth a dedicated retry next cycle.",
+   "steps": "CreateSandbox; 25 sequential ExecSandbox; exec 30x getent hosts; 6 concurrent ExecSandbox; GetSandbox still Ready; final exec echo."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794175969] env round-trip: 'val-6937_e1a0dbbe6596'",
+   "prose": "Two randomly generated env vars injected at sandbox creation both came back verbatim from an exec inside it \u2014 the baseline every credential-injection and trace-forwarding feature depends on, green again this cycle.",
+   "steps": "Re-run of generator t_env_injection from battery-variable.py (seed 1794175916)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794175996] {\"GetGatewayInfo\": 76, \"ListSandboxes\": 115}ms",
+   "prose": "Gateway responsiveness pulse: [seed 1794175996] {\"GetGatewayInfo\": 76, \"ListSandboxes\": 11 \u2014 fast enough for interactive use, and a longitudinal baseline for spotting degradation across cycles.",
+   "steps": "Re-run of generator t_rpc_latency from battery-variable.py (seed 1794175916)."
+  },
+  {
+   "id": "TV-FLEET",
+   "title": "Fleet snapshot + drift",
+   "desc": "api-server fetch failed",
+   "ok": false,
+   "detail": "Expecting value: line 1 column 1 (char 0) \u2014 api-server returned Unauthorized: hsctl session ended 22:12:39Z (invalid_grant after ~9.5h, expires_in shrank 300s\u2192165s first)",
+   "prose": "The fleet snapshot failed with Unauthorized \u2014 and the root cause is bigger than this test: the hsctl session itself ended at 22:12:39Z. The refresher log shows the classic Keycloak max-session death spiral: expires_in shrank from 300s to 165s on the 22:08 refresh, then invalid_grant. After ~9.5 hours of continuous rotation, the SSO session max lifetime was hit. The owner needs to re-run hsctl login; fleet stats will fail in every cycle until then.",
+   "steps": "Re-run of generator t_fleet_snapshot from battery-variable.py (seed 1794175916)."
+  }
+ ]
+}

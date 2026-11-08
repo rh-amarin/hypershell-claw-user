@@ -6,3 +6,4 @@
 {"file": "data/battery-MB-sol.json", "run": "battery-MB-sol", "timestamp": "2026-11-08T16:14:00Z", "title": "Model comparison B: gpt-6.1-sol runs the variable battery", "model": "gpt-6.1-sol"}
 {"file": "data/battery-V-1794161536.json", "run": "battery-V-1794161536", "timestamp": "2026-11-08T18:14:00Z", "title": "Upstream fixes visible: policy-anchor validation and trace forwarding, plus regression set", "model": ""}
 {"file": "data/battery-V-215740.json", "run": "battery-V-1794174835", "timestamp": "2026-11-08T21:56:13Z", "title": "Upstream-inspired cycle: workload identity + regressions", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"}
+{"file": "data/battery-V-221552.json", "run": "battery-V-1794175916", "timestamp": "2026-11-08T22:13:17Z", "title": "Resilience cycle: churn (#5211) \u2014 concurrency fail + hsctl session death", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"}
