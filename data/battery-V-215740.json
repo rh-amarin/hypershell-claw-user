@@ -27,7 +27,8 @@
    "desc": "Two random env vars verified in exec",
    "ok": true,
    "detail": "[seed 1794174836] env round-trip: 'val-3659_14daf169de87'",
-   "steps": "Re-run of generator t_env_injection from battery-variable.py (seed 1794174835)."
+   "steps": "Re-run of generator t_env_injection from battery-variable.py (seed 1794174835).",
+   "prose": "Two random env vars verified in exec"
   },
   {
    "id": "TV-LBL",
@@ -35,7 +36,8 @@
    "desc": "cycle=cycle4867 matches only this sandbox",
    "ok": true,
    "detail": "[seed 1794174867] ready=ready match=True",
-   "steps": "Re-run of generator t_label_selector from battery-variable.py (seed 1794174835)."
+   "steps": "Re-run of generator t_label_selector from battery-variable.py (seed 1794174835).",
+   "prose": "cycle=cycle4867 matches only this sandbox"
   },
   {
    "id": "TV-CONC",
@@ -43,7 +45,8 @@
    "desc": "3 parallel streams with computed outputs",
    "ok": true,
    "detail": "[seed 1794174928] width=3 all-correct=True",
-   "steps": "Re-run of generator t_concurrent_exec from battery-variable.py (seed 1794174835)."
+   "steps": "Re-run of generator t_concurrent_exec from battery-variable.py (seed 1794174835).",
+   "prose": "3 parallel streams with computed outputs"
   },
   {
    "id": "T4",
