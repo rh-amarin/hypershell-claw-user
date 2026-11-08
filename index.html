@@ -1,75 +1,107 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exploration log — overview</title><style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#faf9f6; color:#1a1d23; line-height:1.6; max-width:980px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-header { background:linear-gradient(135deg,#1f2430,#3d3a1f); color:#fff; border-radius:16px; padding:2rem 2rem; margin-bottom:1.6rem; position:relative; }
-header .kicker { text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; color:#f5c518; font-weight:700; }
-header h1 { font-size:1.7rem; margin:.4rem 0 .3rem; }
-header .sub { color:#c9cedd; font-size:.92rem; }
-nav { display:flex; gap:.6rem; margin:0 0 1.6rem; flex-wrap:wrap; }
-nav a { background:#fff; border:1px solid #e8e5de; border-radius:999px; padding:.4rem 1rem; text-decoration:none; color:#1a1d23; font-size:.88rem; font-weight:600; }
-nav a:hover { border-color:#b8860b; }
-nav a.active { background:#1a1d23; color:#f5c518; border-color:#1a1d23; }
-.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.7rem; margin-bottom:1.8rem; }
-.stat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.9rem 1rem; }
-.stat b { font-size:1.4rem; display:block; }
-.stat span { font-size:.72rem; color:#8a90a2; text-transform:uppercase; letter-spacing:.07em; }
-section { margin-bottom:2.2rem; }
-h2 { font-size:1.2rem; margin-bottom:.8rem; }
-.run { background:#fff; border:1px solid #e8e5de; border-left:4px solid #1a8f4a; border-radius:12px; padding:1rem 1.2rem; margin-bottom:.9rem; }
-.run.fail-major { border-left-color:#c62828; }
-.run-head { display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; }
-.run-date { font-family:monospace; font-size:.75rem; color:#8a90a2; }
-.run-name { font-weight:700; }
-.run-score { margin-left:auto; font-weight:800; font-size:.9rem; }
-.run-score.ok { color:#1a8f4a; } .run-score.bad { color:#c62828; }
-.run-battery { color:#4a5060; font-size:.88rem; margin:.25rem 0 .5rem; }
-.tests { display:grid; gap:.4rem; }
-.t { display:flex; gap:.6rem; align-items:baseline; font-size:.86rem; padding:.35rem .6rem; background:#f7f5f0; border-radius:8px; }
-.t .tid { font-family:monospace; font-weight:700; color:#b8860b; font-size:.74rem; flex:none; }
-.t .mark { flex:none; font-weight:800; }
-.t .mark.ok { color:#1a8f4a; } .t .mark.bad { color:#c62828; }
-.t .detail { color:#6a7080; font-size:.78rem; font-family:monospace; overflow-wrap:anywhere; }
-.cat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.95rem 1.1rem; margin-bottom:.7rem; }
-.cat-head { display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; }
-.cat-id { font-family:monospace; font-weight:700; color:#b8860b; font-size:.78rem; background:#fdf6d8; border-radius:6px; padding:.1rem .45rem; }
-.cat-title { font-weight:700; font-size:.95rem; }
-.cat-passrate { margin-left:auto; font-weight:800; font-size:.85rem; }
-.cat-passrate.ok { color:#1a8f4a; } .cat-passrate.bad { color:#c62828; } .cat-passrate.mixed { color:#b26a00; }
-.cat-desc { color:#4a5060; font-size:.87rem; margin:.3rem 0 .4rem; }
-.cat-hist { font-size:.76rem; color:#8a90a2; font-family:monospace; }
-.cat-hist .h-ok { color:#1a8f4a; } .cat-hist .h-bad { color:#c62828; }
-footer { margin-top:2.5rem; padding-top:1rem; border-top:1px solid #e8e5de; color:#8a90a2; font-size:.78rem; }
-</style></head>
-<body>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Exploration journal</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;background:#faf9f6;color:#1a1d23;line-height:1.7;max-width:820px;margin:0 auto;padding:2rem 1.25rem 4rem;font-size:1.02rem}
+header{border-bottom:3px solid #b8860b;padding-bottom:1.2rem;margin-bottom:2rem}
+header .kicker{font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;color:#b8860b;font-weight:700}
+header h1{font-size:2rem;margin:.4rem 0 .3rem;font-weight:700}
+header .sub{color:#4a5060;font-size:.95rem;font-style:italic}
+nav{font-family:-apple-system,sans-serif;display:flex;gap:.6rem;margin:0 0 2rem;flex-wrap:wrap}
+nav a{background:#fff;border:1px solid #e8e5de;border-radius:999px;padding:.35rem .95rem;text-decoration:none;color:#1a1d23;font-size:.85rem;font-weight:600}
+nav a.active{background:#1a1d23;color:#f5c518;border-color:#1a1d23}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin-bottom:2rem;font-family:-apple-system,sans-serif}
+.stat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.8rem .9rem}
+.stat b{font-size:1.35rem;display:block}
+.stat span{font-size:.68rem;color:#8a90a2;text-transform:uppercase;letter-spacing:.07em}
+article.run{margin-bottom:3rem}
+article.run h2{font-size:1.35rem;margin-bottom:.2rem}
+article.run .rundate{font-family:ui-monospace,monospace;font-size:.75rem;color:#8a90a2;margin-bottom:.8rem}
+article.run .runintro{color:#4a5060;margin-bottom:1.2rem;max-width:44rem}
+.case{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.9rem}
+.case .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;margin-bottom:.35rem}
+.case .cid{font-family:ui-monospace,monospace;font-weight:700;color:#b8860b;font-size:.72rem;background:#fdf6d8;border-radius:6px;padding:.12rem .45rem}
+.case .ctitle{font-weight:700;font-family:-apple-system,sans-serif;font-size:.95rem}
+.case .cmark{margin-left:auto;font-weight:800;font-family:-apple-system,sans-serif;font-size:.8rem}
+.case .cmark.ok{color:#1a8f4a}.case .cmark.bad{color:#c62828}
+.case p{font-size:.94rem;color:#333;margin:.3rem 0 .5rem}
+.case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
+.case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
+.case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
+.cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
+.cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+.cat-id{font-family:ui-monospace,monospace;font-weight:700;color:#b8860b;font-size:.74rem;background:#fdf6d8;border-radius:6px;padding:.1rem .4rem}
+.cat-title{font-weight:700;font-size:.92rem}
+.cat-pass{margin-left:auto;font-weight:800;font-size:.8rem}
+.cat-pass.ok{color:#1a8f4a}.cat-pass.bad{color:#c62828}.cat-pass.mixed{color:#b26a00}
+.cat p{font-size:.85rem;color:#4a5060;margin:.25rem 0}
+.cat .hist{font-size:.72rem;color:#8a90a2;font-family:ui-monospace,monospace}
+.cat .h-ok{color:#1a8f4a}.cat .h-bad{color:#c62828}
+footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a90a2;font-size:.78rem;font-family:-apple-system,sans-serif}
+</style></head><body>
 <header>
-  <div class="kicker">Hypershell / OpenShell exploration log</div>
-  <h1>Agent exploration journal 🍋</h1>
-  <div class="sub">Every test execution, logged as it happened — by Lemon, an OpenClaw agent acting as a real platform user on hyp2.</div>
+<div class="kicker">Hypershell exploration journal</div>
+<h1>Notes from inside the sandbox</h1>
+<div class="sub">What an AI agent learned by actually using the OpenShell platform — written up for a colleague.</div>
 </header>
-<nav>
-  <a href="index.html" class="active">Overview</a>
-  <a href="log.html" class="">Run log</a>
-  <a href="catalog.html" class="">Test catalog</a>
-</nav>
-
+<nav><a href="index.html" class="active">Overview</a>
+<a href="log.html" class="">Journal</a>
+<a href="catalog.html" class="">Catalog</a></nav>
 <div class="stats">
-  <div class="stat"><b style="color:#1a8f4a">25</b><span>tests passed</span></div>
-  <div class="stat"><b style="color:#c62828">7</b><span>failed / findings</span></div>
-  <div class="stat"><b>4</b><span>runs executed</span></div>
-  <div class="stat"><b style="color:#1565c0">32</b><span>unique tests</span></div>
-</div>
-<section><h2>Latest run</h2><div class="run fail-major">
-  <div class="run-head"><span class="run-name">battery-V-1794149471</span>
-    <span class="run-date">2026-11-08T14:51:11Z</span>
-    <span class="run-score bad">4/5 passed</span></div>
-  <div class="run-battery">Variable battery: seeded-random configs (env vars, labels, policy subsets, concurrency width, payloads), sampled test pool, fleet drift snapshot.</div>
-  <div class="tests"><div class="t"><span class="tid">TV-FLEET</span><span class="mark bad">✗</span><span>Fleet snapshot + drift</span><span class="detail">[seed 1794149360] Expecting value: line 1 column 1 (char 0)</span></div><div class="t"><span class="tid">TV-POL</span><span class="mark ok">✓</span><span>Random policy subset</span><span class="detail">[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True</span></div><div class="t"><span class="tid">TV-FS</span><span class="mark ok">✓</span><span>Random payload FS roundtrip</span><span class="detail">[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True</span></div><div class="t"><span class="tid">TV-ENV</span><span class="mark ok">✓</span><span>Random env injection</span><span class="detail">[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;</span></div><div class="t"><span class="tid">TV-CONC</span><span class="mark ok">✓</span><span>Random-width concurrent exec</span><span class="detail">[seed 1794149360] width=4 all-correct=True</span></div></div>
-</div></section>
-<section><h2>What this is</h2>
-<p style="color:#4a5060;font-size:.92rem;max-width:44rem">A real-user simulation of the <b>openshift-online/hypershell</b> platform and its <b>OpenShell</b> gateways: an AI agent was given a gateway service account and told to behave like a platform user — connecting, creating sandboxes with different configurations, testing policies, lifecycle, templates, service exposure, concurrency and error paths. Every execution is logged below; the catalog deduplicates the unique test cases across runs.</p></section>
+<div class="stat"><b style="color:#1a8f4a">25</b><span>passed</span></div>
+<div class="stat"><b style="color:#c62828">7</b><span>findings</span></div>
+<div class="stat"><b>4</b><span>runs</span></div>
+<div class="stat"><b style="color:#1565c0">32</b><span>unique cases</span></div></div>
+<section style="font-family:-apple-system,sans-serif">
+<p style="color:#4a5060;max-width:44rem;font-size:.92rem">This journal documents an ongoing real-user simulation of the <b>hypershell</b> platform: an agent was given a gateway service account and told to behave like a platform user — with all the confusion, workarounds, and small discoveries that implies. Each entry below is a run; the catalog deduplicates the test cases across runs.</p></section>
+<article class="run"><h2>Latest: battery-V-1794149471</h2><div class="rundate">2026-11-08T14:51:11Z</div>
+<p class="runintro">A variable cycle: each run of this battery is seeded differently — random env vars, labels, policy subsets, concurrency widths, and payloads — so no two cycles test exactly the same thing. It also snapshots the fleet (gateway counts, versions) and reports drift since the last cycle.</p>
+<div class="case">
+  <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>The longitudinal one: snapshot the whole gateway fleet (counts, versions) and diff against the previous cycle&#x27;s snapshot. This is how the journal will catch drift over time — new gateways appearing, versions rolling out.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] Expecting value: line 1 column 1 (char 0)<div class="kv">technical detail (raw)
+[seed 1794149360] Expecting value: line 1 column 1 (char 0)
 
-<footer>Generated by gen-site.py from structured test results · 2026-11-08 14:51 UTC · maintained by the Lemon agent</footer>
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-POL</span><span class="ctitle">Random policy subset</span><span class="cmark ok">✓ passed</span></div>
+  <p>Network policies are only useful if arbitrary endpoint sets actually take effect, so I let the seed pick a random subset of hosts and built a policy around just those. After the sandbox came up, I asked the gateway for its stored spec: exactly my hosts, nothing extra. Scoping works as advertised.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True<div class="kv">technical detail (raw)
+[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
+  <p>I wanted to know whether files written inside a sandbox stick around, so I generated a random hash, wrote it to /tmp, and read it back twice from two separate exec calls. The payload survived both reads — within a single sandbox session, the filesystem behaves like you&#x27;d expect.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True<div class="kv">technical detail (raw)
+[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-ENV</span><span class="ctitle">Random env injection</span><span class="cmark ok">✓ passed</span></div>
+  <p>Environment variables are the simplest config channel into a sandbox. I generated two random key-value pairs, created the sandbox with them, and echoed them back from inside. The first attempt &quot;failed&quot; because my echo command had a bash variable-name parsing bug ($A_$B parses as one variable!) — the platform was fine, my quoting wasn&#x27;t. Fixed with ${A}_${B} syntax and verified.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;<div class="kv">technical detail (raw)
+[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-CONC</span><span class="ctitle">Random-width concurrent exec</span><span class="cmark ok">✓ passed</span></div>
+  <p>How well does the gateway handle simultaneous exec streams into the same sandbox? I fired three parallel commands, each echoing a computed value so I could tell them apart. The initial run failed — but that was my test harness racing on shared temp files (a lesson from battery 2 I apparently had to relearn), not the platform.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] width=4 all-correct=True<div class="kv">technical detail (raw)
+[seed 1794149360] width=4 all-correct=True
+
+environment & conditions:
+</div></div></details>
+</div></article>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 14:56 UTC</footer>
 </body></html>

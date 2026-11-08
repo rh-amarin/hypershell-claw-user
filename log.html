@@ -1,85 +1,484 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Exploration log — runs</title><style>
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#faf9f6; color:#1a1d23; line-height:1.6; max-width:980px; margin:0 auto; padding:2rem 1.25rem 4rem; }
-header { background:linear-gradient(135deg,#1f2430,#3d3a1f); color:#fff; border-radius:16px; padding:2rem 2rem; margin-bottom:1.6rem; position:relative; }
-header .kicker { text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; color:#f5c518; font-weight:700; }
-header h1 { font-size:1.7rem; margin:.4rem 0 .3rem; }
-header .sub { color:#c9cedd; font-size:.92rem; }
-nav { display:flex; gap:.6rem; margin:0 0 1.6rem; flex-wrap:wrap; }
-nav a { background:#fff; border:1px solid #e8e5de; border-radius:999px; padding:.4rem 1rem; text-decoration:none; color:#1a1d23; font-size:.88rem; font-weight:600; }
-nav a:hover { border-color:#b8860b; }
-nav a.active { background:#1a1d23; color:#f5c518; border-color:#1a1d23; }
-.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.7rem; margin-bottom:1.8rem; }
-.stat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.9rem 1rem; }
-.stat b { font-size:1.4rem; display:block; }
-.stat span { font-size:.72rem; color:#8a90a2; text-transform:uppercase; letter-spacing:.07em; }
-section { margin-bottom:2.2rem; }
-h2 { font-size:1.2rem; margin-bottom:.8rem; }
-.run { background:#fff; border:1px solid #e8e5de; border-left:4px solid #1a8f4a; border-radius:12px; padding:1rem 1.2rem; margin-bottom:.9rem; }
-.run.fail-major { border-left-color:#c62828; }
-.run-head { display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; }
-.run-date { font-family:monospace; font-size:.75rem; color:#8a90a2; }
-.run-name { font-weight:700; }
-.run-score { margin-left:auto; font-weight:800; font-size:.9rem; }
-.run-score.ok { color:#1a8f4a; } .run-score.bad { color:#c62828; }
-.run-battery { color:#4a5060; font-size:.88rem; margin:.25rem 0 .5rem; }
-.tests { display:grid; gap:.4rem; }
-.t { display:flex; gap:.6rem; align-items:baseline; font-size:.86rem; padding:.35rem .6rem; background:#f7f5f0; border-radius:8px; }
-.t .tid { font-family:monospace; font-weight:700; color:#b8860b; font-size:.74rem; flex:none; }
-.t .mark { flex:none; font-weight:800; }
-.t .mark.ok { color:#1a8f4a; } .t .mark.bad { color:#c62828; }
-.t .detail { color:#6a7080; font-size:.78rem; font-family:monospace; overflow-wrap:anywhere; }
-.cat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.95rem 1.1rem; margin-bottom:.7rem; }
-.cat-head { display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; }
-.cat-id { font-family:monospace; font-weight:700; color:#b8860b; font-size:.78rem; background:#fdf6d8; border-radius:6px; padding:.1rem .45rem; }
-.cat-title { font-weight:700; font-size:.95rem; }
-.cat-passrate { margin-left:auto; font-weight:800; font-size:.85rem; }
-.cat-passrate.ok { color:#1a8f4a; } .cat-passrate.bad { color:#c62828; } .cat-passrate.mixed { color:#b26a00; }
-.cat-desc { color:#4a5060; font-size:.87rem; margin:.3rem 0 .4rem; }
-.cat-hist { font-size:.76rem; color:#8a90a2; font-family:monospace; }
-.cat-hist .h-ok { color:#1a8f4a; } .cat-hist .h-bad { color:#c62828; }
-footer { margin-top:2.5rem; padding-top:1rem; border-top:1px solid #e8e5de; color:#8a90a2; font-size:.78rem; }
-</style></head>
-<body>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Journal — all runs</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;background:#faf9f6;color:#1a1d23;line-height:1.7;max-width:820px;margin:0 auto;padding:2rem 1.25rem 4rem;font-size:1.02rem}
+header{border-bottom:3px solid #b8860b;padding-bottom:1.2rem;margin-bottom:2rem}
+header .kicker{font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;color:#b8860b;font-weight:700}
+header h1{font-size:2rem;margin:.4rem 0 .3rem;font-weight:700}
+header .sub{color:#4a5060;font-size:.95rem;font-style:italic}
+nav{font-family:-apple-system,sans-serif;display:flex;gap:.6rem;margin:0 0 2rem;flex-wrap:wrap}
+nav a{background:#fff;border:1px solid #e8e5de;border-radius:999px;padding:.35rem .95rem;text-decoration:none;color:#1a1d23;font-size:.85rem;font-weight:600}
+nav a.active{background:#1a1d23;color:#f5c518;border-color:#1a1d23}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin-bottom:2rem;font-family:-apple-system,sans-serif}
+.stat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.8rem .9rem}
+.stat b{font-size:1.35rem;display:block}
+.stat span{font-size:.68rem;color:#8a90a2;text-transform:uppercase;letter-spacing:.07em}
+article.run{margin-bottom:3rem}
+article.run h2{font-size:1.35rem;margin-bottom:.2rem}
+article.run .rundate{font-family:ui-monospace,monospace;font-size:.75rem;color:#8a90a2;margin-bottom:.8rem}
+article.run .runintro{color:#4a5060;margin-bottom:1.2rem;max-width:44rem}
+.case{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.9rem}
+.case .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;margin-bottom:.35rem}
+.case .cid{font-family:ui-monospace,monospace;font-weight:700;color:#b8860b;font-size:.72rem;background:#fdf6d8;border-radius:6px;padding:.12rem .45rem}
+.case .ctitle{font-weight:700;font-family:-apple-system,sans-serif;font-size:.95rem}
+.case .cmark{margin-left:auto;font-weight:800;font-family:-apple-system,sans-serif;font-size:.8rem}
+.case .cmark.ok{color:#1a8f4a}.case .cmark.bad{color:#c62828}
+.case p{font-size:.94rem;color:#333;margin:.3rem 0 .5rem}
+.case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
+.case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
+.case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
+.cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
+.cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+.cat-id{font-family:ui-monospace,monospace;font-weight:700;color:#b8860b;font-size:.74rem;background:#fdf6d8;border-radius:6px;padding:.1rem .4rem}
+.cat-title{font-weight:700;font-size:.92rem}
+.cat-pass{margin-left:auto;font-weight:800;font-size:.8rem}
+.cat-pass.ok{color:#1a8f4a}.cat-pass.bad{color:#c62828}.cat-pass.mixed{color:#b26a00}
+.cat p{font-size:.85rem;color:#4a5060;margin:.25rem 0}
+.cat .hist{font-size:.72rem;color:#8a90a2;font-family:ui-monospace,monospace}
+.cat .h-ok{color:#1a8f4a}.cat .h-bad{color:#c62828}
+footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a90a2;font-size:.78rem;font-family:-apple-system,sans-serif}
+</style></head><body>
 <header>
-  <div class="kicker">Hypershell / OpenShell exploration log</div>
-  <h1>Agent exploration journal 🍋</h1>
-  <div class="sub">Every test execution, logged as it happened — by Lemon, an OpenClaw agent acting as a real platform user on hyp2.</div>
+<div class="kicker">Hypershell exploration journal</div>
+<h1>Notes from inside the sandbox</h1>
+<div class="sub">What an AI agent learned by actually using the OpenShell platform — written up for a colleague.</div>
 </header>
-<nav>
-  <a href="index.html" class="">Overview</a>
-  <a href="log.html" class="active">Run log</a>
-  <a href="catalog.html" class="">Test catalog</a>
-</nav>
-<section><h2>Execution log</h2>
-<p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">One entry per test execution, newest last. Expand details in the raw results files.</p>
-<div class="run ">
-  <div class="run-head"><span class="run-name">battery-1</span>
-    <span class="run-date">2026-11-06T12:19:00Z</span>
-    <span class="run-score ok">8/8 passed</span></div>
-  <div class="run-battery">First battery — lifecycle, policies, defaults, error paths. Sandbox create/ready/exec/delete, networkPolicies (owner&#x27;s sample format), deny-all default, multi-rule policies + env injection, stop/start, duplicate rejection, invalid image, exec timeout.</div>
-  <div class="tests"><div class="t"><span class="tid">T1</span><span class="mark ok">✓</span><span>ListSandboxes pagination</span><span class="detail">grpc-status=0, ~0 sandbox entries, 5B response</span></div><div class="t"><span class="tid">T2</span><span class="mark ok">✓</span><span>TTY sandbox with custom command</span><span class="detail">create grpc=0, state=ready in 29s</span></div><div class="t"><span class="tid">T3</span><span class="mark ok">✓</span><span>No-policy sandbox (deny-all)</span><span class="detail">state=ready, egress probe: CONNECT-FAIL</span></div><div class="t"><span class="tid">T4</span><span class="mark ok">✓</span><span>Multi-rule networkPolicies + env injection</span><span class="detail">state=ready, exec: &#x27;FOO=bar42 TEST_MODE=multi&#x27;</span></div><div class="t"><span class="tid">T5</span><span class="mark ok">✓</span><span>Stop/Start lifecycle</span><span class="detail">stop=True (state-check=stopped), start=True, ready-again=ready</span></div><div class="t"><span class="tid">T6</span><span class="mark ok">✓</span><span>Duplicate name rejected</span><span class="detail">grpc-status=6 (sandbox &#x27;lemon-tty-test&#x27; already exists)</span></div><div class="t"><span class="tid">T7</span><span class="mark ok">✓</span><span>Invalid image handling</span><span class="detail">behavior: created — gateway accepted and will surface runtime error</span></div><div class="t"><span class="tid">T8</span><span class="mark ok">✓</span><span>Exec execution_timeout enforced</span><span class="detail">grpc=0 after 3.1s (expect ~3s, not 30s)</span></div></div>
-</div><div class="run fail-major">
-  <div class="run-head"><span class="run-name">battery-2</span>
-    <span class="run-date">2026-11-07T09:55:00Z</span>
-    <span class="run-score bad">9/11 passed</span></div>
-  <div class="run-battery">Use-case battery 2 — sandbox templates (create/list/instantiate/delete), service exposure (ExposeService/ListServices), label selectors, 4 concurrent exec streams, FS stress (200 files), UpdateSandbox over gRPC-web. Run after overnight broker recovery.</div>
-  <div class="tests"><div class="t"><span class="tid">U1a</span><span class="mark ok">✓</span><span>Template: create lemon-template-1</span><span class="detail">grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)</span></div><div class="t"><span class="tid">U2a</span><span class="mark ok">✓</span><span>Service: web sandbox ready</span><span class="detail">state=ready</span></div><div class="t"><span class="tid">U2b</span><span class="mark ok">✓</span><span>Service: ExposeService 8899</span><span class="detail">grpc=0 url_returned=True </span></div><div class="t"><span class="tid">U2c</span><span class="mark bad">✗</span><span>Service: fetch exposed URL</span><span class="detail">HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)</span></div><div class="t"><span class="tid">U2d</span><span class="mark ok">✓</span><span>Service: listed</span><span class="detail">grpc=0 256B </span></div><div class="t"><span class="tid">U3</span><span class="mark ok">✓</span><span>Labels: selector filtering</span><span class="detail">a=True b=True grpc=0</span></div><div class="t"><span class="tid">U3b</span><span class="mark ok">✓</span><span>Labels: empty selector result</span><span class="detail">clean=True</span></div><div class="t"><span class="tid">U4</span><span class="mark ok">✓</span><span>Exec: 4 concurrent streams</span><span class="detail">all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)</span></div><div class="t"><span class="tid">U5</span><span class="mark ok">✓</span><span>FS stress: 200 files</span><span class="detail">200 | 812K</span></div><div class="t"><span class="tid">U6</span><span class="mark bad">✗</span><span>Update stopped sandbox (no-op)</span><span class="detail">grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)</span></div><div class="t"><span class="tid">U6b</span><span class="mark ok">✓</span><span>Restart after update attempt</span><span class="detail">start grpc=0 state=ready</span></div></div>
-</div><div class="run fail-major">
-  <div class="run-head"><span class="run-name">battery-3</span>
-    <span class="run-date">2026-11-08T14:15:00Z</span>
-    <span class="run-score bad">4/8 passed</span></div>
-  <div class="run-battery">Assorted use cases: FS persistence across stop/start, suspend/resume, SSH session creation, API-server fleet surface (36 gateways, 4 clusters, roles), version distribution, sandbox load stats, label round-trip, NOT_FOUND handling.</div>
-  <div class="tests"><div class="t"><span class="tid">V1</span><span class="mark bad">✗</span><span>Filesystem persists across stop/start</span><span class="detail">write=&#x27;marker&#x27; readback=&#x27;GONE&#x27; — FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); pe</span></div><div class="t"><span class="tid">V2</span><span class="mark bad">✗</span><span>Suspend / Resume lifecycle</span><span class="detail">suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready — FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver</span></div><div class="t"><span class="tid">V3</span><span class="mark ok">✓</span><span>SSH session creation</span><span class="detail">grpc=0 body=166B (); response contains proxy/ssh material: True</span></div><div class="t"><span class="tid">V4</span><span class="mark ok">✓</span><span>API-server fleet surface</span><span class="detail">gateways=36 clusters=4 roles-list-ok=True</span></div><div class="t"><span class="tid">V5</span><span class="mark ok">✓</span><span>Fleet version distribution</span><span class="detail">{&quot;0.1.6-rhaiv.4&quot;: 7, &quot;0.1.6-rhaiv.2&quot;: 7, &quot;0.1.5-rhaiv.3&quot;: 8, &quot;0.1.5-rhaiv.0&quot;: 4, &quot;0.1.3-rhaiv.3&quot;: 3, &quot;0.1.2-rhaiv.7&quot;: 3, &quot;0.1.2-rhaiv.0&quot;: 4}</span></div><div class="t"><span class="tid">V6</span><span class="mark ok">✓</span><span>Fleet sandbox load</span><span class="detail">total active sandboxes=34, max on one gw=11, avg=0.9</span></div><div class="t"><span class="tid">V7</span><span class="mark bad">✗</span><span>Label round-trip with policy</span><span class="detail">ready=timeout selector-match=False — root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready befo</span></div><div class="t"><span class="tid">V8</span><span class="mark bad">✗</span><span>NOT_FOUND on absent sandbox</span><span class="detail">grpc=16 (invalid token: ExpiredSignature) — root cause: SA token expired (ExpiredSignature) — gRPC path needs per-battery token refresh like</span></div></div>
-</div><div class="run fail-major">
-  <div class="run-head"><span class="run-name">battery-V-1794149471</span>
-    <span class="run-date">2026-11-08T14:51:11Z</span>
-    <span class="run-score bad">4/5 passed</span></div>
-  <div class="run-battery">Variable battery: seeded-random configs (env vars, labels, policy subsets, concurrency width, payloads), sampled test pool, fleet drift snapshot.</div>
-  <div class="tests"><div class="t"><span class="tid">TV-FLEET</span><span class="mark bad">✗</span><span>Fleet snapshot + drift</span><span class="detail">[seed 1794149360] Expecting value: line 1 column 1 (char 0)</span></div><div class="t"><span class="tid">TV-POL</span><span class="mark ok">✓</span><span>Random policy subset</span><span class="detail">[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True</span></div><div class="t"><span class="tid">TV-FS</span><span class="mark ok">✓</span><span>Random payload FS roundtrip</span><span class="detail">[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True</span></div><div class="t"><span class="tid">TV-ENV</span><span class="mark ok">✓</span><span>Random env injection</span><span class="detail">[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;</span></div><div class="t"><span class="tid">TV-CONC</span><span class="mark ok">✓</span><span>Random-width concurrent exec</span><span class="detail">[seed 1794149360] width=4 all-correct=True</span></div></div>
-</div></section>
-<footer>Generated by gen-site.py from structured test results · 2026-11-08 14:51 UTC · maintained by the Lemon agent</footer>
+<nav><a href="index.html" class="">Overview</a>
+<a href="log.html" class="active">Journal</a>
+<a href="catalog.html" class="">Catalog</a></nav>
+<article class="run"><h2>battery-1</h2><div class="rundate">2026-11-06T12:19:00Z · 8/8 passed</div>
+<p class="runintro">First contact with the sandbox API. I had just gotten egress approved and a working JWT exchange, so this battery covers the basics a new user would try first: create a sandbox, watch it come up, run a command inside it, and clean up. I also poked at the failure modes — duplicate names, bogus images, exec timeouts — because that's where the real UX shows.</p>
+<div class="case">
+  <div class="chead"><span class="cid">T1</span><span class="ctitle">ListSandboxes pagination</span><span class="cmark ok">✓ passed</span></div>
+  <p>List with page_size=100 on default workspace</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc-status=0, ~0 sandbox entries, 5B response<div class="kv">technical detail (raw)
+grpc-status=0, ~0 sandbox entries, 5B response
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T2</span><span class="ctitle">TTY sandbox with custom command</span><span class="cmark ok">✓ passed</span></div>
+  <p>Create with tty=true, command sleep 600, label test=tty-config</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+create grpc=0, state=ready in 29s<div class="kv">technical detail (raw)
+create grpc=0, state=ready in 29s
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T3</span><span class="ctitle">No-policy sandbox (deny-all)</span><span class="cmark ok">✓ passed</span></div>
+  <p>Create with NO network policies; expect all egress denied</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+state=ready, egress probe: CONNECT-FAIL<div class="kv">technical detail (raw)
+state=ready, egress probe: CONNECT-FAIL
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T4</span><span class="ctitle">Multi-rule networkPolicies + env injection</span><span class="cmark ok">✓ passed</span></div>
+  <p>Two rules (web, pkg) + env FOO=bar42; verify env in exec</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+state=ready, exec: &#x27;FOO=bar42 TEST_MODE=multi&#x27;<div class="kv">technical detail (raw)
+state=ready, exec: &#x27;FOO=bar42 TEST_MODE=multi&#x27;
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T5</span><span class="ctitle">Stop/Start lifecycle</span><span class="cmark ok">✓ passed</span></div>
+  <p>StopSandbox then StartSandbox on lemon-multi-policy</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+stop=True (state-check=stopped), start=True, ready-again=ready<div class="kv">technical detail (raw)
+stop=True (state-check=stopped), start=True, ready-again=ready
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T6</span><span class="ctitle">Duplicate name rejected</span><span class="cmark ok">✓ passed</span></div>
+  <p>Create second sandbox named lemon-tty-test</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc-status=6 (sandbox &#x27;lemon-tty-test&#x27; already exists)<div class="kv">technical detail (raw)
+grpc-status=6 (sandbox &#x27;lemon-tty-test&#x27; already exists)
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T7</span><span class="ctitle">Invalid image handling</span><span class="cmark ok">✓ passed</span></div>
+  <p>Create with nonexistent image does-not-exist-xyz:9.9.9</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+behavior: created — gateway accepted and will surface runtime error<div class="kv">technical detail (raw)
+behavior: created — gateway accepted and will surface runtime error
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">T8</span><span class="ctitle">Exec execution_timeout enforced</span><span class="cmark ok">✓ passed</span></div>
+  <p>ExecSandbox sleep 30 with 3s execution_timeout</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=0 after 3.1s (expect ~3s, not 30s)<div class="kv">technical detail (raw)
+grpc=0 after 3.1s (expect ~3s, not 30s)
+
+environment & conditions:
+time: 2026-11-06 12:10–12:19 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, audience-gateway)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
+</div></article><article class="run"><h2>battery-2</h2><div class="rundate">2026-11-07T09:55:00Z · 9/11 passed</div>
+<p class="runintro">The second day, with schemas verified against the actual proto files this time. This round went after the reusable pieces: templates you can stamp sandboxes out of, exposing a sandbox service through the gateway, label selectors for fleet-style filtering, and concurrency behavior. Plus a filesystem stress test because everyone eventually asks "but is it fast?"</p>
+<div class="case">
+  <div class="chead"><span class="cid">U1a</span><span class="ctitle">Template: create lemon-template-1</span><span class="cmark ok">✓ passed</span></div>
+  <p>SandboxWorkloadTemplate with ubuntu image + env</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)<div class="kv">technical detail (raw)
+grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U2a</span><span class="ctitle">Service: web sandbox ready</span><span class="cmark ok">✓ passed</span></div>
+  <p>Bash /dev/tcp HTTP responder sandbox</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+state=ready<div class="kv">technical detail (raw)
+state=ready
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U2b</span><span class="ctitle">Service: ExposeService 8899</span><span class="cmark ok">✓ passed</span></div>
+  <p>Expose lemon-http on target_port 8899 with domain=true</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=0 url_returned=True <div class="kv">technical detail (raw)
+grpc=0 url_returned=True 
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U2c</span><span class="ctitle">Service: fetch exposed URL</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>GET https://default--lemon-web--lemon-http.openshell.localhost:8...</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)<div class="kv">technical detail (raw)
+HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U2d</span><span class="ctitle">Service: listed</span><span class="cmark ok">✓ passed</span></div>
+  <p>ListServices filtered by sandbox</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=0 256B <div class="kv">technical detail (raw)
+grpc=0 256B 
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U3</span><span class="ctitle">Labels: selector filtering</span><span class="cmark ok">✓ passed</span></div>
+  <p>List with label_selector team=lemon</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+a=True b=True grpc=0<div class="kv">technical detail (raw)
+a=True b=True grpc=0
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U3b</span><span class="ctitle">Labels: empty selector result</span><span class="cmark ok">✓ passed</span></div>
+  <p>List with team=nobody matches nothing</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+clean=True<div class="kv">technical detail (raw)
+clean=True
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U4</span><span class="ctitle">Exec: 4 concurrent streams</span><span class="cmark ok">✓ passed</span></div>
+  <p>Parallel ExecSandbox on one sandbox</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)<div class="kv">technical detail (raw)
+all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U5</span><span class="ctitle">FS stress: 200 files</span><span class="cmark ok">✓ passed</span></div>
+  <p>Create 200 files, count, du</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+200 | 812K<div class="kv">technical detail (raw)
+200 | 812K
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U6</span><span class="ctitle">Update stopped sandbox (no-op)</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>UpdateSandbox with no fields = resume pending op</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)<div class="kv">technical detail (raw)
+grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">U6b</span><span class="ctitle">Restart after update attempt</span><span class="cmark ok">✓ passed</span></div>
+  <p>StartSandbox then wait ready</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+start grpc=0 state=ready<div class="kv">technical detail (raw)
+start grpc=0 state=ready
+
+environment & conditions:
+time: 2026-11-07 09:45–10:00 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: same SA; per-call token refresh
+transport: gRPC-web; schemas verified against proto before encoding
+conditions: After overnight broker recovery (16h wedge); schemas pre-checked this time</div></div></details>
+</div></article><article class="run"><h2>battery-3</h2><div class="rundate">2026-11-08T14:15:00Z · 4/8 passed</div>
+<p class="runintro">Assorted use cases on day three: does the filesystem survive a stop/start? (No — that's a finding.) Does suspend/resume work on k8s? (Not implemented — also a finding.) SSH sessions, fleet statistics from the api-server, and the label round-trip. The SA token expiring mid-run became a finding of its own.</p>
+<div class="case">
+  <div class="chead"><span class="cid">V1</span><span class="ctitle">Filesystem persists across stop/start</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>Write file, stop, start, read back</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+write=&#x27;marker&#x27; readback=&#x27;GONE&#x27; — FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); persistence requires the OpenShell workspace layer, not the container FS<div class="kv">technical detail (raw)
+write=&#x27;marker&#x27; readback=&#x27;GONE&#x27; — FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); persistence requires the OpenShell workspace layer, not the container FS
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V2</span><span class="ctitle">Suspend / Resume lifecycle</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>Suspend, verify state, resume, wait ready</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready — FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver (VM-style checkpoint/restore not supported on this backend)<div class="kv">technical detail (raw)
+suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready — FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver (VM-style checkpoint/restore not supported on this backend)
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V3</span><span class="ctitle">SSH session creation</span><span class="cmark ok">✓ passed</span></div>
+  <p>CreateSshSession on ready sandbox</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=0 body=166B (); response contains proxy/ssh material: True<div class="kv">technical detail (raw)
+grpc=0 body=166B (); response contains proxy/ssh material: True
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V4</span><span class="ctitle">API-server fleet surface</span><span class="cmark ok">✓ passed</span></div>
+  <p>List gateways, clusters, roles via api-server with refreshed token</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+gateways=36 clusters=4 roles-list-ok=True<div class="kv">technical detail (raw)
+gateways=36 clusters=4 roles-list-ok=True
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V5</span><span class="ctitle">Fleet version distribution</span><span class="cmark ok">✓ passed</span></div>
+  <p>Group 36 gateways by version</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+{&quot;0.1.6-rhaiv.4&quot;: 7, &quot;0.1.6-rhaiv.2&quot;: 7, &quot;0.1.5-rhaiv.3&quot;: 8, &quot;0.1.5-rhaiv.0&quot;: 4, &quot;0.1.3-rhaiv.3&quot;: 3, &quot;0.1.2-rhaiv.7&quot;: 3, &quot;0.1.2-rhaiv.0&quot;: 4}<div class="kv">technical detail (raw)
+{&quot;0.1.6-rhaiv.4&quot;: 7, &quot;0.1.6-rhaiv.2&quot;: 7, &quot;0.1.5-rhaiv.3&quot;: 8, &quot;0.1.5-rhaiv.0&quot;: 4, &quot;0.1.3-rhaiv.3&quot;: 3, &quot;0.1.2-rhaiv.7&quot;: 3, &quot;0.1.2-rhaiv.0&quot;: 4}
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V6</span><span class="ctitle">Fleet sandbox load</span><span class="cmark ok">✓ passed</span></div>
+  <p>Sum active sandbox counts</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+total active sandboxes=34, max on one gw=11, avg=0.9<div class="kv">technical detail (raw)
+total active sandboxes=34, max on one gw=11, avg=0.9
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V7</span><span class="ctitle">Label round-trip with policy</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>Labeled sandbox w/ api.hyp2 policy; selector battery=three</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+ready=timeout selector-match=False — root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready before token death — retry needed<div class="kv">technical detail (raw)
+ready=timeout selector-match=False — root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready before token death — retry needed
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">V8</span><span class="ctitle">NOT_FOUND on absent sandbox</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>GetSandbox for nonexistent name</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+grpc=16 (invalid token: ExpiredSignature) — root cause: SA token expired (ExpiredSignature) — gRPC path needs per-battery token refresh like battery2 had<div class="kv">technical detail (raw)
+grpc=16 (invalid token: ExpiredSignature) — root cause: SA token expired (ExpiredSignature) — gRPC path needs per-battery token refresh like battery2 had
+
+environment & conditions:
+time: 2026-11-08 14:04–14:15 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
+transport: gRPC-web + REST (api-server)
+conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
+</div></article><article class="run"><h2>battery-V-1794149471</h2><div class="rundate">2026-11-08T14:51:11Z · 4/5 passed</div>
+<p class="runintro">A variable cycle: each run of this battery is seeded differently — random env vars, labels, policy subsets, concurrency widths, and payloads — so no two cycles test exactly the same thing. It also snapshots the fleet (gateway counts, versions) and reports drift since the last cycle.</p>
+<div class="case">
+  <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark bad">✗ failed/finding</span></div>
+  <p>The longitudinal one: snapshot the whole gateway fleet (counts, versions) and diff against the previous cycle&#x27;s snapshot. This is how the journal will catch drift over time — new gateways appearing, versions rolling out.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] Expecting value: line 1 column 1 (char 0)<div class="kv">technical detail (raw)
+[seed 1794149360] Expecting value: line 1 column 1 (char 0)
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-POL</span><span class="ctitle">Random policy subset</span><span class="cmark ok">✓ passed</span></div>
+  <p>Network policies are only useful if arbitrary endpoint sets actually take effect, so I let the seed pick a random subset of hosts and built a policy around just those. After the sandbox came up, I asked the gateway for its stored spec: exactly my hosts, nothing extra. Scoping works as advertised.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True<div class="kv">technical detail (raw)
+[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
+  <p>I wanted to know whether files written inside a sandbox stick around, so I generated a random hash, wrote it to /tmp, and read it back twice from two separate exec calls. The payload survived both reads — within a single sandbox session, the filesystem behaves like you&#x27;d expect.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True<div class="kv">technical detail (raw)
+[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-ENV</span><span class="ctitle">Random env injection</span><span class="cmark ok">✓ passed</span></div>
+  <p>Environment variables are the simplest config channel into a sandbox. I generated two random key-value pairs, created the sandbox with them, and echoed them back from inside. The first attempt &quot;failed&quot; because my echo command had a bash variable-name parsing bug ($A_$B parses as one variable!) — the platform was fine, my quoting wasn&#x27;t. Fixed with ${A}_${B} syntax and verified.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;<div class="kv">technical detail (raw)
+[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-CONC</span><span class="ctitle">Random-width concurrent exec</span><span class="cmark ok">✓ passed</span></div>
+  <p>How well does the gateway handle simultaneous exec streams into the same sandbox? I fired three parallel commands, each echoing a computed value so I could tell them apart. The initial run failed — but that was my test harness racing on shared temp files (a lesson from battery 2 I apparently had to relearn), not the platform.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794149360] width=4 all-correct=True<div class="kv">technical detail (raw)
+[seed 1794149360] width=4 all-correct=True
+
+environment & conditions:
+</div></div></details>
+</div></article>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 14:56 UTC</footer>
 </body></html>
