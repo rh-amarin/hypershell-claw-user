@@ -49,59 +49,59 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 <a href="log.html" class="">Journal</a>
 <a href="catalog.html" class="">Catalog</a></nav>
 <div class="stats">
-<div class="stat"><b style="color:#1a8f4a">26</b><span>passed</span></div>
+<div class="stat"><b style="color:#1a8f4a">31</b><span>passed</span></div>
 <div class="stat"><b style="color:#c62828">6</b><span>findings</span></div>
-<div class="stat"><b>4</b><span>runs</span></div>
-<div class="stat"><b style="color:#1565c0">32</b><span>unique cases</span></div></div>
+<div class="stat"><b>5</b><span>runs</span></div>
+<div class="stat"><b style="color:#1565c0">33</b><span>unique cases</span></div></div>
 <section style="font-family:-apple-system,sans-serif">
 <p style="color:#4a5060;max-width:44rem;font-size:.92rem">This journal documents an ongoing real-user simulation of the <b>hypershell</b> platform: an agent was given a gateway service account and told to behave like a platform user — with all the confusion, workarounds, and small discoveries that implies. Each entry below is a run; the catalog deduplicates the test cases across runs.</p></section>
-<article class="run"><h2>Latest: battery-MA-glm</h2><div class="rundate">2026-11-08T16:08:10Z</div>
+<article class="run"><h2>Latest: battery-MB-sol</h2><div class="rundate">2026-11-08T16:14:00Z</div>
 <p class="runintro">Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</p>
 <div class="case">
   <div class="chead"><span class="cid">TV-CMP</span><span class="ctitle">Random compute in exec</span><span class="cmark ok">✓ passed</span></div>
-  <p>Sanity check that exec does honest work: I multiplied two random numbers (9996 × 7095) inside the sandbox and the product came back exactly right. Trivial on its face, but it proves commands actually execute and return real output — not canned responses.</p>
+  <p>I asked the sandbox to multiply 9027 by 5792 and got exactly 52284384 back. This checks that exec returns the expected output for a real command, rather than treating a successful RPC alone as proof of useful work.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;<div class="kv">technical detail (raw)
-[seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;
+[seed 1794154327] 9027x5792=52284384 got=&#x27;52284384&#x27;<div class="kv">technical detail (raw)
+[seed 1794154327] 9027x5792=52284384 got=&#x27;52284384&#x27;
 
 environment & conditions:
 </div></div></details>
 </div><div class="case">
-  <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
-  <p>Filesystem round-trip within a session: wrote a random SHA-256 payload to /tmp and read it back from a separate exec call. It survived, confirming the sandbox filesystem is stable across commands within one sandbox lifetime (though, as battery 3 found, not across stop/start).</p>
+  <div class="chead"><span class="cid">TV-POL</span><span class="ctitle">Random policy subset</span><span class="cmark ok">✓ passed</span></div>
+  <p>I created a sandbox whose sampled policy contained one API endpoint, then confirmed that endpoint appeared in the stored response and github.com did not. This is a configuration round-trip check, not proof that network enforcement allowed or blocked any request; the script never exercised traffic.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] payload 07d630a0f099… roundtrip ok=True<div class="kv">technical detail (raw)
-[seed 1794153995] payload 07d630a0f099… roundtrip ok=True
-
-environment & conditions:
-</div></div></details>
-</div><div class="case">
-  <div class="chead"><span class="cid">TV-LAT</span><span class="ctitle">RPC latency snapshot</span><span class="cmark ok">✓ passed</span></div>
-  <p>Gateway responsiveness pulse: metadata call at 67ms, list at 85ms. Fast enough that interactive use would feel instantaneous; the numbers become a longitudinal baseline when compared across cycles.</p>
-  <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms<div class="kv">technical detail (raw)
-[seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms
+[seed 1794154327] hosts=[&#x27;api.hyp2.infra.hypershell.app&#x27;] stored=True no-extra=True<div class="kv">technical detail (raw)
+[seed 1794154327] hosts=[&#x27;api.hyp2.infra.hypershell.app&#x27;] stored=True no-extra=True
 
 environment & conditions:
 </div></div></details>
 </div><div class="case">
   <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark ok">✓ passed</span></div>
-  <p>The fleet snapshot: 36 gateways, 7 versions in the wild, no drift since the last cycle. This is the journal&#x27;s slow-motion camera — new gateways and version rollouts will show up here as diffs over time.</p>
+  <p>I compared the fleet snapshot with the previous saved snapshot: 36 gateways across seven versions, with no drift reported by the script. That gives us a useful continuity check, although this detector does not comprehensively track added or removed version keys.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] 36 gateways, 7 versions, no drift<div class="kv">technical detail (raw)
-[seed 1794153995] 36 gateways, 7 versions, no drift
+[seed 1794154327] 36 gateways, 7 versions, no drift<div class="kv">technical detail (raw)
+[seed 1794154327] 36 gateways, 7 versions, no drift
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
+  <p>I wrote a hash payload beginning ac80c6b95ff7 into the sandbox and checked it both immediately and through another exec call. Both reads matched, showing continuity within this sandbox lifetime—not persistence across a stop/start.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+[seed 1794154327] payload ac80c6b95ff7… roundtrip ok=True<div class="kv">technical detail (raw)
+[seed 1794154327] payload ac80c6b95ff7… roundtrip ok=True
 
 environment & conditions:
 </div></div></details>
 </div><div class="case">
   <div class="chead"><span class="cid">MODEL-SELF</span><span class="ctitle">Model self-report</span><span class="cmark ok">✓ passed</span></div>
-  <p>This cycle ran under GLM-5.3 — the same model as the interactive session. Approach: executed the seeded battery mechanically first, then wrote these case notes from the actual outputs rather than from assumptions. I leaned on the large context window to recall prior battery findings (like the FS-persistence caveat) while writing.</p>
+  <p>I ran this cycle under gpt-6.1-sol and checked what the harness actually asserted before writing these notes. In particular, I limited the policy finding to stored configuration and the filesystem finding to one sandbox lifetime; those boundaries matter more than making four green results sound broader than they are.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-Executed under GLM-5.3 (rits/zai-org/glm-5-3).<div class="kv">technical detail (raw)
-Executed under GLM-5.3 (rits/zai-org/glm-5-3).
+Executed under gpt-6.1-sol (custom-api-enmaas-devshift-net/gpt-6.1-sol). I checked the test implementation as well as its result values, separating configuration checks from enforcement claims.<div class="kv">technical detail (raw)
+Executed under gpt-6.1-sol (custom-api-enmaas-devshift-net/gpt-6.1-sol). I checked the test implementation as well as its result values, separating configuration checks from enforcement claims.
 
 environment & conditions:
 </div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:08 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:14 UTC</footer>
 </body></html>
