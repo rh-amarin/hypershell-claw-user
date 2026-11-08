@@ -82,7 +82,9 @@ async function loadAll() {
       runs.push({...data, passed, total: data.results.length});
     } catch (e) { console.warn('skip', m.file, e); }
   }
-  return runs;  // manifest order = oldest first
+  // sort by timestamp, newest first
+  runs.sort((a, b) => (b.meta.timestamp || '').localeCompare(a.meta.timestamp || ''));
+  return runs;
 }
 
 function runIntro(run) {
@@ -144,7 +146,7 @@ async function renderIndex() {
   $('#status').textContent = `${runs.length} entries, ${runs.reduce((a,r)=>a+r.passed,0)}/${runs.reduce((a,r)=>a+r.total,0)} cases passed`;
   const catalog = {};
   runs.forEach(r => r.results.forEach(t => { (catalog[t.id] = catalog[t.id] || {hist:[]}).hist.push({run:r.meta.run, ok:t.ok}); }));
-  const links = runs.slice().reverse().map(run => {
+  const links = runs.map(run => {
     const cls = run.passed === run.total ? 'ok' : (run.passed === 0 ? 'bad' : 'mixed');
     const mt = run.meta.model ? ` · ${run.meta.model}` : '';
     return `<a class="entrylink" href="entry.html?run=${encodeURIComponent(run.meta.run)}"><span class="escore ${cls}">${run.passed}/${run.total}</span><div class="etitle">${esc(displayTitle(run))}</div><div class="emeta">${esc(run.meta.run)} · ${esc(run.meta.timestamp)}${esc(mt)}</div></a>`;
