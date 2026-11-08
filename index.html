@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exploration log — overview</title><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#faf9f6; color:#1a1d23; line-height:1.6; max-width:980px; margin:0 auto; padding:2rem 1.25rem 4rem; }
+header { background:linear-gradient(135deg,#1f2430,#3d3a1f); color:#fff; border-radius:16px; padding:2rem 2rem; margin-bottom:1.6rem; position:relative; }
+header .kicker { text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; color:#f5c518; font-weight:700; }
+header h1 { font-size:1.7rem; margin:.4rem 0 .3rem; }
+header .sub { color:#c9cedd; font-size:.92rem; }
+nav { display:flex; gap:.6rem; margin:0 0 1.6rem; flex-wrap:wrap; }
+nav a { background:#fff; border:1px solid #e8e5de; border-radius:999px; padding:.4rem 1rem; text-decoration:none; color:#1a1d23; font-size:.88rem; font-weight:600; }
+nav a:hover { border-color:#b8860b; }
+nav a.active { background:#1a1d23; color:#f5c518; border-color:#1a1d23; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.7rem; margin-bottom:1.8rem; }
+.stat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.9rem 1rem; }
+.stat b { font-size:1.4rem; display:block; }
+.stat span { font-size:.72rem; color:#8a90a2; text-transform:uppercase; letter-spacing:.07em; }
+section { margin-bottom:2.2rem; }
+h2 { font-size:1.2rem; margin-bottom:.8rem; }
+.run { background:#fff; border:1px solid #e8e5de; border-left:4px solid #1a8f4a; border-radius:12px; padding:1rem 1.2rem; margin-bottom:.9rem; }
+.run.fail-major { border-left-color:#c62828; }
+.run-head { display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; }
+.run-date { font-family:monospace; font-size:.75rem; color:#8a90a2; }
+.run-name { font-weight:700; }
+.run-score { margin-left:auto; font-weight:800; font-size:.9rem; }
+.run-score.ok { color:#1a8f4a; } .run-score.bad { color:#c62828; }
+.run-battery { color:#4a5060; font-size:.88rem; margin:.25rem 0 .5rem; }
+.tests { display:grid; gap:.4rem; }
+.t { display:flex; gap:.6rem; align-items:baseline; font-size:.86rem; padding:.35rem .6rem; background:#f7f5f0; border-radius:8px; }
+.t .tid { font-family:monospace; font-weight:700; color:#b8860b; font-size:.74rem; flex:none; }
+.t .mark { flex:none; font-weight:800; }
+.t .mark.ok { color:#1a8f4a; } .t .mark.bad { color:#c62828; }
+.t .detail { color:#6a7080; font-size:.78rem; font-family:monospace; overflow-wrap:anywhere; }
+.cat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.95rem 1.1rem; margin-bottom:.7rem; }
+.cat-head { display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; }
+.cat-id { font-family:monospace; font-weight:700; color:#b8860b; font-size:.78rem; background:#fdf6d8; border-radius:6px; padding:.1rem .45rem; }
+.cat-title { font-weight:700; font-size:.95rem; }
+.cat-passrate { margin-left:auto; font-weight:800; font-size:.85rem; }
+.cat-passrate.ok { color:#1a8f4a; } .cat-passrate.bad { color:#c62828; } .cat-passrate.mixed { color:#b26a00; }
+.cat-desc { color:#4a5060; font-size:.87rem; margin:.3rem 0 .4rem; }
+.cat-hist { font-size:.76rem; color:#8a90a2; font-family:monospace; }
+.cat-hist .h-ok { color:#1a8f4a; } .cat-hist .h-bad { color:#c62828; }
+footer { margin-top:2.5rem; padding-top:1rem; border-top:1px solid #e8e5de; color:#8a90a2; font-size:.78rem; }
+</style></head>
+<body>
+<header>
+  <div class="kicker">Hypershell / OpenShell exploration log</div>
+  <h1>Agent exploration journal 🍋</h1>
+  <div class="sub">Every test execution, logged as it happened — by Lemon, an OpenClaw agent acting as a real platform user on hyp2.</div>
+</header>
+<nav>
+  <a href="index.html" class="active">Overview</a>
+  <a href="log.html" class="">Run log</a>
+  <a href="catalog.html" class="">Test catalog</a>
+</nav>
+
+<div class="stats">
+  <div class="stat"><b style="color:#1a8f4a">17</b><span>tests passed</span></div>
+  <div class="stat"><b style="color:#c62828">2</b><span>failed / findings</span></div>
+  <div class="stat"><b>2</b><span>runs executed</span></div>
+  <div class="stat"><b style="color:#1565c0">19</b><span>unique tests</span></div>
+</div>
+<section><h2>Latest run</h2><div class="run fail-major">
+  <div class="run-head"><span class="run-name">battery-2</span>
+    <span class="run-date">2026-11-07T09:55:00Z</span>
+    <span class="run-score bad">9/11 passed</span></div>
+  <div class="run-battery">Use-case battery 2 — sandbox templates (create/list/instantiate/delete), service exposure (ExposeService/ListServices), label selectors, 4 concurrent exec streams, FS stress (200 files), UpdateSandbox over gRPC-web. Run after overnight broker recovery.</div>
+  <div class="tests"><div class="t"><span class="tid">U1a</span><span class="mark ok">✓</span><span>Template: create lemon-template-1</span><span class="detail">grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)</span></div><div class="t"><span class="tid">U2a</span><span class="mark ok">✓</span><span>Service: web sandbox ready</span><span class="detail">state=ready</span></div><div class="t"><span class="tid">U2b</span><span class="mark ok">✓</span><span>Service: ExposeService 8899</span><span class="detail">grpc=0 url_returned=True </span></div><div class="t"><span class="tid">U2c</span><span class="mark bad">✗</span><span>Service: fetch exposed URL</span><span class="detail">HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)</span></div><div class="t"><span class="tid">U2d</span><span class="mark ok">✓</span><span>Service: listed</span><span class="detail">grpc=0 256B </span></div><div class="t"><span class="tid">U3</span><span class="mark ok">✓</span><span>Labels: selector filtering</span><span class="detail">a=True b=True grpc=0</span></div><div class="t"><span class="tid">U3b</span><span class="mark ok">✓</span><span>Labels: empty selector result</span><span class="detail">clean=True</span></div><div class="t"><span class="tid">U4</span><span class="mark ok">✓</span><span>Exec: 4 concurrent streams</span><span class="detail">all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)</span></div><div class="t"><span class="tid">U5</span><span class="mark ok">✓</span><span>FS stress: 200 files</span><span class="detail">200 | 812K</span></div><div class="t"><span class="tid">U6</span><span class="mark bad">✗</span><span>Update stopped sandbox (no-op)</span><span class="detail">grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)</span></div><div class="t"><span class="tid">U6b</span><span class="mark ok">✓</span><span>Restart after update attempt</span><span class="detail">start grpc=0 state=ready</span></div></div>
+</div></section>
+<section><h2>What this is</h2>
+<p style="color:#4a5060;font-size:.92rem;max-width:44rem">A real-user simulation of the <b>openshift-online/hypershell</b> platform and its <b>OpenShell</b> gateways: an AI agent was given a gateway service account and told to behave like a platform user — connecting, creating sandboxes with different configurations, testing policies, lifecycle, templates, service exposure, concurrency and error paths. Every execution is logged below; the catalog deduplicates the unique test cases across runs.</p></section>
+
+<footer>Generated by gen-site.py from structured test results · 2026-11-07 09:53 UTC · maintained by the Lemon agent</footer>
+</body></html>

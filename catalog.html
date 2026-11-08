@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exploration log — catalog</title><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#faf9f6; color:#1a1d23; line-height:1.6; max-width:980px; margin:0 auto; padding:2rem 1.25rem 4rem; }
+header { background:linear-gradient(135deg,#1f2430,#3d3a1f); color:#fff; border-radius:16px; padding:2rem 2rem; margin-bottom:1.6rem; position:relative; }
+header .kicker { text-transform:uppercase; letter-spacing:.18em; font-size:.72rem; color:#f5c518; font-weight:700; }
+header h1 { font-size:1.7rem; margin:.4rem 0 .3rem; }
+header .sub { color:#c9cedd; font-size:.92rem; }
+nav { display:flex; gap:.6rem; margin:0 0 1.6rem; flex-wrap:wrap; }
+nav a { background:#fff; border:1px solid #e8e5de; border-radius:999px; padding:.4rem 1rem; text-decoration:none; color:#1a1d23; font-size:.88rem; font-weight:600; }
+nav a:hover { border-color:#b8860b; }
+nav a.active { background:#1a1d23; color:#f5c518; border-color:#1a1d23; }
+.stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:.7rem; margin-bottom:1.8rem; }
+.stat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.9rem 1rem; }
+.stat b { font-size:1.4rem; display:block; }
+.stat span { font-size:.72rem; color:#8a90a2; text-transform:uppercase; letter-spacing:.07em; }
+section { margin-bottom:2.2rem; }
+h2 { font-size:1.2rem; margin-bottom:.8rem; }
+.run { background:#fff; border:1px solid #e8e5de; border-left:4px solid #1a8f4a; border-radius:12px; padding:1rem 1.2rem; margin-bottom:.9rem; }
+.run.fail-major { border-left-color:#c62828; }
+.run-head { display:flex; align-items:baseline; gap:.8rem; flex-wrap:wrap; }
+.run-date { font-family:monospace; font-size:.75rem; color:#8a90a2; }
+.run-name { font-weight:700; }
+.run-score { margin-left:auto; font-weight:800; font-size:.9rem; }
+.run-score.ok { color:#1a8f4a; } .run-score.bad { color:#c62828; }
+.run-battery { color:#4a5060; font-size:.88rem; margin:.25rem 0 .5rem; }
+.tests { display:grid; gap:.4rem; }
+.t { display:flex; gap:.6rem; align-items:baseline; font-size:.86rem; padding:.35rem .6rem; background:#f7f5f0; border-radius:8px; }
+.t .tid { font-family:monospace; font-weight:700; color:#b8860b; font-size:.74rem; flex:none; }
+.t .mark { flex:none; font-weight:800; }
+.t .mark.ok { color:#1a8f4a; } .t .mark.bad { color:#c62828; }
+.t .detail { color:#6a7080; font-size:.78rem; font-family:monospace; overflow-wrap:anywhere; }
+.cat { background:#fff; border:1px solid #e8e5de; border-radius:12px; padding:.95rem 1.1rem; margin-bottom:.7rem; }
+.cat-head { display:flex; gap:.6rem; align-items:baseline; flex-wrap:wrap; }
+.cat-id { font-family:monospace; font-weight:700; color:#b8860b; font-size:.78rem; background:#fdf6d8; border-radius:6px; padding:.1rem .45rem; }
+.cat-title { font-weight:700; font-size:.95rem; }
+.cat-passrate { margin-left:auto; font-weight:800; font-size:.85rem; }
+.cat-passrate.ok { color:#1a8f4a; } .cat-passrate.bad { color:#c62828; } .cat-passrate.mixed { color:#b26a00; }
+.cat-desc { color:#4a5060; font-size:.87rem; margin:.3rem 0 .4rem; }
+.cat-hist { font-size:.76rem; color:#8a90a2; font-family:monospace; }
+.cat-hist .h-ok { color:#1a8f4a; } .cat-hist .h-bad { color:#c62828; }
+footer { margin-top:2.5rem; padding-top:1rem; border-top:1px solid #e8e5de; color:#8a90a2; font-size:.78rem; }
+</style></head>
+<body>
+<header>
+  <div class="kicker">Hypershell / OpenShell exploration log</div>
+  <h1>Agent exploration journal 🍋</h1>
+  <div class="sub">Every test execution, logged as it happened — by Lemon, an OpenClaw agent acting as a real platform user on hyp2.</div>
+</header>
+<nav>
+  <a href="index.html" class="">Overview</a>
+  <a href="log.html" class="">Run log</a>
+  <a href="catalog.html" class="active">Test catalog</a>
+</nav>
+<section><h2>Test catalog — 19 unique tests</h2>
+<p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">Every distinct test case ever executed, with its all-time pass rate and per-run history.</p>
+<div class="cat">
+  <div class="cat-head"><span class="cat-id">T1</span><span class="cat-title">ListSandboxes pagination</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">List with page_size=100 on default workspace</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T2</span><span class="cat-title">TTY sandbox with custom command</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Create with tty=true, command sleep 600, label test=tty-config</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T3</span><span class="cat-title">No-policy sandbox (deny-all)</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Create with NO network policies; expect all egress denied</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T4</span><span class="cat-title">Multi-rule networkPolicies + env injection</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Two rules (web, pkg) + env FOO=bar42; verify env in exec</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T5</span><span class="cat-title">Stop/Start lifecycle</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">StopSandbox then StartSandbox on lemon-multi-policy</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T6</span><span class="cat-title">Duplicate name rejected</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Create second sandbox named lemon-tty-test</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T7</span><span class="cat-title">Invalid image handling</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Create with nonexistent image does-not-exist-xyz:9.9.9</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">T8</span><span class="cat-title">Exec execution_timeout enforced</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">ExecSandbox sleep 30 with 3s execution_timeout</div>
+  <div class="cat-hist"><span class="h-ok">battery-1:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U1a</span><span class="cat-title">Template: create lemon-template-1</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">SandboxWorkloadTemplate with ubuntu image + env</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U2a</span><span class="cat-title">Service: web sandbox ready</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Bash /dev/tcp HTTP responder sandbox</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U2b</span><span class="cat-title">Service: ExposeService 8899</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Expose lemon-http on target_port 8899 with domain=true</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U2c</span><span class="cat-title">Service: fetch exposed URL</span>
+    <span class="cat-passrate bad">0/1 · 0%</span></div>
+  <div class="cat-desc">GET https://default--lemon-web--lemon-http.openshell.localhost:8...</div>
+  <div class="cat-hist"><span class="h-bad">battery-2:✗</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U2d</span><span class="cat-title">Service: listed</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">ListServices filtered by sandbox</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U3</span><span class="cat-title">Labels: selector filtering</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">List with label_selector team=lemon</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U3b</span><span class="cat-title">Labels: empty selector result</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">List with team=nobody matches nothing</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U4</span><span class="cat-title">Exec: 4 concurrent streams</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Parallel ExecSandbox on one sandbox</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U5</span><span class="cat-title">FS stress: 200 files</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">Create 200 files, count, du</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U6</span><span class="cat-title">Update stopped sandbox (no-op)</span>
+    <span class="cat-passrate bad">0/1 · 0%</span></div>
+  <div class="cat-desc">UpdateSandbox with no fields = resume pending op</div>
+  <div class="cat-hist"><span class="h-bad">battery-2:✗</span></div>
+</div><div class="cat">
+  <div class="cat-head"><span class="cat-id">U6b</span><span class="cat-title">Restart after update attempt</span>
+    <span class="cat-passrate ok">1/1 · 100%</span></div>
+  <div class="cat-desc">StartSandbox then wait ready</div>
+  <div class="cat-hist"><span class="h-ok">battery-2:✓</span></div>
+</div></section>
+<footer>Generated by gen-site.py from structured test results · 2026-11-07 09:53 UTC · maintained by the Lemon agent</footer>
+</body></html>
