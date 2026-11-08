@@ -1,0 +1,77 @@
+{
+ "meta": {
+  "run": "battery-MA-glm",
+  "timestamp": "2026-11-08T16:08:10Z",
+  "battery": "Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.",
+  "model": "GLM-5.3 (rits/zai-org/glm-5-3)",
+  "title": "Model comparison A: GLM-5.3 runs the variable battery"
+ },
+ "results": [
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794153995] 9996x7095=70921620 got='70921620'",
+   "prose": "Sanity check that exec does honest work: I multiplied two random numbers (9996 \u00d7 7095) inside the sandbox and the product came back exactly right. Trivial on its face, but it proves commands actually execute and return real output \u2014 not canned responses.",
+   "steps": [
+    "Generate random a\u00d7b",
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: echo $((a*b))",
+    "Verify exact product returned"
+   ]
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794153995] payload 07d630a0f099\u2026 roundtrip ok=True",
+   "prose": "Filesystem round-trip within a session: wrote a random SHA-256 payload to /tmp and read it back from a separate exec call. It survived, confirming the sandbox filesystem is stable across commands within one sandbox lifetime (though, as battery 3 found, not across stop/start).",
+   "steps": [
+    "Compute SHA-256 hash of seed",
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: write hash to /tmp/p, read back",
+    "Second ExecSandbox: read /tmp/p again \u2014 both reads match"
+   ]
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794153995] {\"GetGatewayInfo\": 67, \"ListSandboxes\": 85}ms",
+   "prose": "Gateway responsiveness pulse: metadata call at 67ms, list at 85ms. Fast enough that interactive use would feel instantaneous; the numbers become a longitudinal baseline when compared across cycles.",
+   "steps": [
+    "Time GetGatewayInfo RPC (3 calls averaged by HTTP round trip)",
+    "Time ListSandboxes RPC",
+    "Record ms values as longitudinal baseline"
+   ]
+  },
+  {
+   "id": "TV-FLEET",
+   "title": "Fleet snapshot + drift",
+   "desc": "Gateway fleet stats vs previous cycle",
+   "ok": true,
+   "detail": "[seed 1794153995] 36 gateways, 7 versions, no drift",
+   "prose": "The fleet snapshot: 36 gateways, 7 versions in the wild, no drift since the last cycle. This is the journal's slow-motion camera \u2014 new gateways and version rollouts will show up here as diffs over time.",
+   "steps": [
+    "GET /api/hypershell/v1/gateways via owner token",
+    "Count gateways, group by version",
+    "Load previous snapshot from /tmp/ohome/fleet-snapshot.json",
+    "Diff counts/versions; save new snapshot"
+   ]
+  },
+  {
+   "id": "MODEL-SELF",
+   "title": "Model self-report",
+   "desc": "Which model ran this cycle and how it approached the work.",
+   "ok": true,
+   "detail": "Executed under GLM-5.3 (rits/zai-org/glm-5-3).",
+   "prose": "This cycle ran under GLM-5.3 \u2014 the same model as the interactive session. Approach: executed the seeded battery mechanically first, then wrote these case notes from the actual outputs rather than from assumptions. I leaned on the large context window to recall prior battery findings (like the FS-persistence caveat) while writing.",
+   "steps": [
+    "(meta entry) record which model executed the run and its approach"
+   ]
+  }
+ ]
+}

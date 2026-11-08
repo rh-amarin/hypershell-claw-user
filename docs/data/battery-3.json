@@ -1,0 +1,105 @@
+{
+ "meta": {
+  "run": "battery-3",
+  "timestamp": "2026-11-08T14:15:00Z",
+  "battery": "Assorted use cases: FS persistence across stop/start, suspend/resume, SSH session creation, API-server fleet surface (36 gateways, 4 clusters, roles), version distribution, sandbox load stats, label round-trip, NOT_FOUND handling.",
+  "title": "The edge cases: ephemeral FS across restarts, unsupported suspend, fleet stats"
+ },
+ "results": [
+  {
+   "id": "V1",
+   "title": "Filesystem persists across stop/start",
+   "desc": "Write file, stop, start, read back",
+   "ok": false,
+   "detail": "write='marker' readback='GONE' \u2014 FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); persistence requires the OpenShell workspace layer, not the container FS",
+   "steps": [
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: echo marker > /tmp/persist-test && cat",
+    "StopSandbox, wait, StartSandbox, wait Ready",
+    "ExecSandbox: cat /tmp/persist-test \u2014 result: GONE (container FS ephemeral)"
+   ]
+  },
+  {
+   "id": "V2",
+   "title": "Suspend / Resume lifecycle",
+   "desc": "Suspend, verify state, resume, wait ready",
+   "ok": false,
+   "detail": "suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready \u2014 FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver (VM-style checkpoint/restore not supported on this backend)",
+   "steps": [
+    "CreateSandbox, wait Ready",
+    "SuspendSandbox RPC",
+    "GetSandbox state check",
+    "ResumeSandbox RPC \u2014 both return UNIMPLEMENTED(9) on kubernetes driver"
+   ]
+  },
+  {
+   "id": "V3",
+   "title": "SSH session creation",
+   "desc": "CreateSshSession on ready sandbox",
+   "ok": true,
+   "detail": "grpc=0 body=166B (); response contains proxy/ssh material: True",
+   "steps": [
+    "CreateSandbox, wait Ready",
+    "CreateSshSession RPC (sandbox, workspace)",
+    "Decode proxy-command material from response"
+   ]
+  },
+  {
+   "id": "V4",
+   "title": "API-server fleet surface",
+   "desc": "List gateways, clusters, roles via api-server with refreshed token",
+   "ok": true,
+   "detail": "gateways=36 clusters=4 roles-list-ok=True",
+   "steps": [
+    "GET /api/hypershell/v1/gateways with owner platform:admin bearer token",
+    "GET /managed_clusters",
+    "GET /roles",
+    "Count and record results"
+   ]
+  },
+  {
+   "id": "V5",
+   "title": "Fleet version distribution",
+   "desc": "Group 36 gateways by version",
+   "ok": true,
+   "detail": "{\"0.1.6-rhaiv.4\": 7, \"0.1.6-rhaiv.2\": 7, \"0.1.5-rhaiv.3\": 8, \"0.1.5-rhaiv.0\": 4, \"0.1.3-rhaiv.3\": 3, \"0.1.2-rhaiv.7\": 3, \"0.1.2-rhaiv.0\": 4}",
+   "steps": [
+    "Group 36 gateway records by gateway_version",
+    "Record version distribution"
+   ]
+  },
+  {
+   "id": "V6",
+   "title": "Fleet sandbox load",
+   "desc": "Sum active sandbox counts",
+   "ok": true,
+   "detail": "total active sandboxes=34, max on one gw=11, avg=0.9",
+   "steps": [
+    "Sum active_sandbox_count across all gateways",
+    "Compute max and average load"
+   ]
+  },
+  {
+   "id": "V7",
+   "title": "Label round-trip with policy",
+   "desc": "Labeled sandbox w/ api.hyp2 policy; selector battery=three",
+   "ok": false,
+   "detail": "ready=timeout selector-match=False \u2014 root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready before token death \u2014 retry needed",
+   "steps": [
+    "CreateSandbox with policy allowing api.hyp2.infra.hypershell.app for curl, labels battery=three/owner=lemon",
+    "ListSandboxes with selector battery=three (blocked by SA token expiry)"
+   ]
+  },
+  {
+   "id": "V8",
+   "title": "NOT_FOUND on absent sandbox",
+   "desc": "GetSandbox for nonexistent name",
+   "ok": false,
+   "detail": "grpc=16 (invalid token: ExpiredSignature) \u2014 root cause: SA token expired (ExpiredSignature) \u2014 gRPC path needs per-battery token refresh like battery2 had",
+   "steps": [
+    "GetSandbox for nonexistent name lemon-never-existed",
+    "Record grpc-status (16 ExpiredSignature \u2014 SA token had expired)"
+   ]
+  }
+ ]
+}

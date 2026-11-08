@@ -1,0 +1,60 @@
+{
+ "meta": {
+  "run": "battery-V-1794149471",
+  "timestamp": "2026-11-08T14:51:11Z",
+  "battery": "Variable battery: seeded-random configs (env vars, labels, policy subsets, concurrency width, payloads), sampled test pool, fleet drift snapshot."
+ },
+ "results": [
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794154327] 9027x5792=52284384 got='52284384'",
+   "steps": [
+    "Generate random a\u00d7b",
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: echo $((a*b))",
+    "Verify exact product returned"
+   ]
+  },
+  {
+   "id": "TV-POL",
+   "title": "Random policy subset",
+   "desc": "1 random endpoints, deny-all else",
+   "ok": true,
+   "detail": "[seed 1794154327] hosts=['api.hyp2.infra.hypershell.app'] stored=True no-extra=True",
+   "steps": [
+    "Sample k random endpoints from host pool",
+    "CreateSandbox with networkPolicies allowing exactly those for curl",
+    "GetSandbox: verify stored spec has exactly those hosts, no extras"
+   ]
+  },
+  {
+   "id": "TV-FLEET",
+   "title": "Fleet snapshot + drift",
+   "desc": "Gateway fleet stats vs previous cycle",
+   "ok": true,
+   "detail": "[seed 1794154327] 36 gateways, 7 versions, no drift",
+   "steps": [
+    "GET /api/hypershell/v1/gateways via owner token",
+    "Count gateways, group by version",
+    "Load previous snapshot from /tmp/ohome/fleet-snapshot.json",
+    "Diff counts/versions; save new snapshot"
+   ]
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794154327] payload ac80c6b95ff7\u2026 roundtrip ok=True",
+   "steps": [
+    "Compute SHA-256 hash of seed",
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: write hash to /tmp/p, read back",
+    "Second ExecSandbox: read /tmp/p again \u2014 both reads match"
+   ]
+  }
+ ]
+}

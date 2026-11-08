@@ -1,0 +1,135 @@
+{
+ "meta": {
+  "run": "battery-2",
+  "timestamp": "2026-11-07T09:55:00Z",
+  "battery": "Use-case battery 2 \u2014 sandbox templates (create/list/instantiate/delete), service exposure (ExposeService/ListServices), label selectors, 4 concurrent exec streams, FS stress (200 files), UpdateSandbox over gRPC-web. Run after overnight broker recovery.",
+  "title": "Reusable pieces: templates, service exposure, labels, concurrency"
+ },
+ "results": [
+  {
+   "id": "U1a",
+   "title": "Template: create lemon-template-1",
+   "desc": "SandboxWorkloadTemplate with ubuntu image + env",
+   "ok": true,
+   "detail": "grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)",
+   "steps": [
+    "CreateSandboxTemplate RPC: SandboxWorkloadTemplate{metadata.name=lemon-template-1, spec.workload{image, env FROM_TEMPLATE=yes}}",
+    "Verify grpc OK"
+   ]
+  },
+  {
+   "id": "U2a",
+   "title": "Service: web sandbox ready",
+   "desc": "Bash /dev/tcp HTTP responder sandbox",
+   "ok": true,
+   "detail": "state=ready",
+   "steps": [
+    "CreateSandbox running bash /dev/tcp HTTP responder loop on 127.0.0.1:8899",
+    "Wait for Ready"
+   ]
+  },
+  {
+   "id": "U2b",
+   "title": "Service: ExposeService 8899",
+   "desc": "Expose lemon-http on target_port 8899 with domain=true",
+   "ok": true,
+   "detail": "grpc=0 url_returned=True ",
+   "steps": [
+    "ExposeService RPC: name=lemon-http, target_port=8899, domain=true",
+    "Check URL in response"
+   ]
+  },
+  {
+   "id": "U2c",
+   "title": "Service: fetch exposed URL",
+   "desc": "GET https://default--lemon-web--lemon-http.openshell.localhost:8...",
+   "ok": false,
+   "detail": "HTTP 000 \u2014 URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)",
+   "steps": [
+    "GET the exposed service URL via curl",
+    "Record HTTP status (unreachable from sandbox egress \u2014 network boundary)"
+   ]
+  },
+  {
+   "id": "U2d",
+   "title": "Service: listed",
+   "desc": "ListServices filtered by sandbox",
+   "ok": true,
+   "detail": "grpc=0 256B ",
+   "steps": [
+    "ListServices RPC filtered by sandbox name",
+    "Verify service listing"
+   ]
+  },
+  {
+   "id": "U3",
+   "title": "Labels: selector filtering",
+   "desc": "List with label_selector team=lemon",
+   "ok": true,
+   "detail": "a=True b=True grpc=0",
+   "steps": [
+    "CreateSandbox \u00d72 with labels team=lemon (env=a / env=b)",
+    "ListSandboxes with label_selector=team=lemon",
+    "Verify both match"
+   ]
+  },
+  {
+   "id": "U3b",
+   "title": "Labels: empty selector result",
+   "desc": "List with team=nobody matches nothing",
+   "ok": true,
+   "detail": "clean=True",
+   "steps": [
+    "ListSandboxes with label_selector=team=nobody",
+    "Verify zero matches"
+   ]
+  },
+  {
+   "id": "U4",
+   "title": "Exec: 4 concurrent streams",
+   "desc": "Parallel ExecSandbox on one sandbox",
+   "ok": true,
+   "detail": "all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)",
+   "steps": [
+    "CreateSandbox (sleep 600)",
+    "4 parallel ExecSandbox calls, each echoing a unique computed value",
+    "Verify all 4 streams return their own values (per-thread rpc temp files)"
+   ]
+  },
+  {
+   "id": "U5",
+   "title": "FS stress: 200 files",
+   "desc": "Create 200 files, count, du",
+   "ok": true,
+   "detail": "200 | 812K",
+   "steps": [
+    "CreateSandbox",
+    "ExecSandbox: loop creating 200 files with content in /tmp/stress",
+    "ls | wc -l and du -sh verification"
+   ]
+  },
+  {
+   "id": "U6",
+   "title": "Update stopped sandbox (no-op)",
+   "desc": "UpdateSandbox with no fields = resume pending op",
+   "ok": false,
+   "detail": "grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path \u2014 update requires the openshell CLI transport, a real-user finding)",
+   "steps": [
+    "CreateSandbox, wait Ready, StopSandbox",
+    "UpdateSandbox RPC with no selected fields",
+    "Record grpc-status (12 UNIMPLEMENTED on gRPC-web path)"
+   ]
+  },
+  {
+   "id": "U6b",
+   "title": "Restart after update attempt",
+   "desc": "StartSandbox then wait ready",
+   "ok": true,
+   "detail": "start grpc=0 state=ready",
+   "steps": [
+    "StartSandbox after failed update",
+    "Poll GetSandbox until Ready"
+   ]
+  }
+ ]
+}

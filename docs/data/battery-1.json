@@ -1,0 +1,106 @@
+{
+ "meta": {
+  "run": "battery-1",
+  "timestamp": "2026-11-06T12:19:00Z",
+  "battery": "First battery \u2014 lifecycle, policies, defaults, error paths. Sandbox create/ready/exec/delete, networkPolicies (owner's sample format), deny-all default, multi-rule policies + env injection, stop/start, duplicate rejection, invalid image, exec timeout.",
+  "title": "First contact: sandbox lifecycle, network policies, and failure modes"
+ },
+ "results": [
+  {
+   "id": "T1",
+   "title": "ListSandboxes pagination",
+   "desc": "List with page_size=100 on default workspace",
+   "ok": true,
+   "detail": "grpc-status=0, ~0 sandbox entries, 5B response",
+   "steps": [
+    "ListSandboxes RPC with page_size=100, workspace_scope=default (gRPC-web POST /openshell.v1.OpenShell/ListSandboxes)",
+    "Decode response; count sandbox entries"
+   ]
+  },
+  {
+   "id": "T2",
+   "title": "TTY sandbox with custom command",
+   "desc": "Create with tty=true, command sleep 600, label test=tty-config",
+   "ok": true,
+   "detail": "create grpc=0, state=ready in 29s",
+   "steps": [
+    "CreateSandbox RPC: image nvcr.io/nvidia/base/ubuntu:24.04, command [/bin/sleep 600], tty=true, label test=tty-config",
+    "Poll GetSandbox until conditions show Ready=True (29s)",
+    "Verify sandbox metadata (uuid, labels, command)"
+   ]
+  },
+  {
+   "id": "T3",
+   "title": "No-policy sandbox (deny-all)",
+   "desc": "Create with NO network policies; expect all egress denied",
+   "ok": true,
+   "detail": "state=ready, egress probe: CONNECT-FAIL",
+   "steps": [
+    "CreateSandbox RPC with NO networkPolicies in spec",
+    "Wait for Ready",
+    "ExecSandbox: bash /dev/tcp probe to github.com:443",
+    "Confirm connect refused (default-deny)"
+   ]
+  },
+  {
+   "id": "T4",
+   "title": "Multi-rule networkPolicies + env injection",
+   "desc": "Two rules (web, pkg) + env FOO=bar42; verify env in exec",
+   "ok": true,
+   "detail": "state=ready, exec: 'FOO=bar42 TEST_MODE=multi'",
+   "steps": [
+    "CreateSandbox with 2 networkPolicies rules (web: example.com+api.example.com for curl; pkg: registry.npmjs.org for node+curl) and env FOO=bar42",
+    "Wait for Ready",
+    "ExecSandbox: echo $FOO $TEST_MODE",
+    "Verify env values match spec"
+   ]
+  },
+  {
+   "id": "T5",
+   "title": "Stop/Start lifecycle",
+   "desc": "StopSandbox then StartSandbox on lemon-multi-policy",
+   "ok": true,
+   "detail": "stop=True (state-check=stopped), start=True, ready-again=ready",
+   "steps": [
+    "StopSandbox RPC on ready sandbox",
+    "GetSandbox: verify stopped state",
+    "StartSandbox RPC",
+    "Poll GetSandbox until Ready again"
+   ]
+  },
+  {
+   "id": "T6",
+   "title": "Duplicate name rejected",
+   "desc": "Create second sandbox named lemon-tty-test",
+   "ok": true,
+   "detail": "grpc-status=6 (sandbox 'lemon-tty-test' already exists)",
+   "steps": [
+    "CreateSandbox reusing an existing name (lemon-tty-test)",
+    "Expect and verify grpc-status=6 ALREADY_EXISTS"
+   ]
+  },
+  {
+   "id": "T7",
+   "title": "Invalid image handling",
+   "desc": "Create with nonexistent image does-not-exist-xyz:9.9.9",
+   "ok": true,
+   "detail": "behavior: created \u2014 gateway accepted and will surface runtime error",
+   "steps": [
+    "CreateSandbox with nonexistent image does-not-exist-xyz:9.9.9",
+    "Record whether rejection happens at admission or at runtime"
+   ]
+  },
+  {
+   "id": "T8",
+   "title": "Exec execution_timeout enforced",
+   "desc": "ExecSandbox sleep 30 with 3s execution_timeout",
+   "ok": true,
+   "detail": "grpc=0 after 3.1s (expect ~3s, not 30s)",
+   "steps": [
+    "CreateSandbox (sleep workload)",
+    "ExecSandbox: sleep 30 with execution_timeout=3s (Duration field 105)",
+    "Measure wall time; verify return at ~3.1s not 30s"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,77 @@
+{
+ "meta": {
+  "run": "battery-MB-sol",
+  "timestamp": "2026-11-08T16:14:00Z",
+  "battery": "Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.",
+  "model": "gpt-6.1-sol",
+  "title": "Model comparison B: gpt-6.1-sol runs the variable battery"
+ },
+ "results": [
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794154327] 9027x5792=52284384 got='52284384'",
+   "prose": "I asked the sandbox to multiply 9027 by 5792 and got exactly 52284384 back. This checks that exec returns the expected output for a real command, rather than treating a successful RPC alone as proof of useful work.",
+   "steps": [
+    "Generate random a\u00d7b",
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: echo $((a*b))",
+    "Verify exact product returned"
+   ]
+  },
+  {
+   "id": "TV-POL",
+   "title": "Random policy subset",
+   "desc": "1 random endpoints, deny-all else",
+   "ok": true,
+   "detail": "[seed 1794154327] hosts=['api.hyp2.infra.hypershell.app'] stored=True no-extra=True",
+   "prose": "I created a sandbox whose sampled policy contained one API endpoint, then confirmed that endpoint appeared in the stored response and github.com did not. This is a configuration round-trip check, not proof that network enforcement allowed or blocked any request; the script never exercised traffic.",
+   "steps": [
+    "Sample k random endpoints from host pool",
+    "CreateSandbox with networkPolicies allowing exactly those for curl",
+    "GetSandbox: verify stored spec has exactly those hosts, no extras"
+   ]
+  },
+  {
+   "id": "TV-FLEET",
+   "title": "Fleet snapshot + drift",
+   "desc": "Gateway fleet stats vs previous cycle",
+   "ok": true,
+   "detail": "[seed 1794154327] 36 gateways, 7 versions, no drift",
+   "prose": "I compared the fleet snapshot with the previous saved snapshot: 36 gateways across seven versions, with no drift reported by the script. That gives us a useful continuity check, although this detector does not comprehensively track added or removed version keys.",
+   "steps": [
+    "GET /api/hypershell/v1/gateways via owner token",
+    "Count gateways, group by version",
+    "Load previous snapshot from /tmp/ohome/fleet-snapshot.json",
+    "Diff counts/versions; save new snapshot"
+   ]
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794154327] payload ac80c6b95ff7\u2026 roundtrip ok=True",
+   "prose": "I wrote a hash payload beginning ac80c6b95ff7 into the sandbox and checked it both immediately and through another exec call. Both reads matched, showing continuity within this sandbox lifetime\u2014not persistence across a stop/start.",
+   "steps": [
+    "Compute SHA-256 hash of seed",
+    "CreateSandbox, wait Ready",
+    "ExecSandbox: write hash to /tmp/p, read back",
+    "Second ExecSandbox: read /tmp/p again \u2014 both reads match"
+   ]
+  },
+  {
+   "id": "MODEL-SELF",
+   "title": "Model self-report",
+   "desc": "Execution provenance and approach; not a platform test.",
+   "ok": true,
+   "detail": "Executed under gpt-6.1-sol (custom-api-enmaas-devshift-net/gpt-6.1-sol). I checked the test implementation as well as its result values, separating configuration checks from enforcement claims.",
+   "prose": "I ran this cycle under gpt-6.1-sol and checked what the harness actually asserted before writing these notes. In particular, I limited the policy finding to stored configuration and the filesystem finding to one sandbox lifetime; those boundaries matter more than making four green results sound broader than they are.",
+   "steps": [
+    "(meta entry) record which model executed the run and its approach"
+   ]
+  }
+ ]
+}
