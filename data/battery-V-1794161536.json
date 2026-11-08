@@ -3,8 +3,11 @@
   "run": "battery-V-1794161536",
   "timestamp": "2026-11-08T18:14:00Z",
   "title": "Upstream fixes visible: policy-anchor validation and trace forwarding, plus regression set",
-  "model": "",
-  "battery": "Upstream-inspired cycle: filesystem-policy anchors (#5278), trace-context env forwarding (#2931), plus reruns of env injection, label selector, concurrent exec."
+  "model": "GLM-5.3 (session)",
+  "battery": "Upstream-inspired cycle: filesystem-policy anchors (#5278), trace-context env forwarding (#2931), plus reruns of env injection, label selector, concurrent exec.",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261107T055526000000Z",
+  "cost": "not tracked (zero-cost provider)"
  },
  "results": [
   {
@@ -13,7 +16,7 @@
    "desc": "Valid absolute RO/RW anchors accepted+stored; relative anchor rejected",
    "ok": true,
    "detail": "valid anchors (/srv/data RO, /tmp/rwdir RW) created+Ready+stored; relative anchor rejected grpc=3: policy contains unsafe content: sandbox policy validation failed; path must be absolute (start with '/'): relative",
-   "prose": "I encode a filesystem policy with an absolute read-only anchor (/srv/data) and read-write anchor (/tmp/rwdir), then one with a relative path. The valid one came up Ready with both anchors stored; the relative one was rejected with INVALID_ARGUMENT: \"policy contains unsafe content: sandbox policy validation failed; path must be absolute\". This is upstream fix #5278 (merged 2026-11-06) visibly enforced on this gateway — sandbox policy anchors are validated, not just stored.",
+   "prose": "I encode a filesystem policy with an absolute read-only anchor (/srv/data) and read-write anchor (/tmp/rwdir), then one with a relative path. The valid one came up Ready with both anchors stored; the relative one was rejected with INVALID_ARGUMENT: \"policy contains unsafe content: sandbox policy validation failed; path must be absolute\". This is upstream fix #5278 (merged 2026-11-06) visibly enforced on this gateway \u2014 sandbox policy anchors are validated, not just stored.",
    "steps": [
     "grep upstream commits; identify fix(sandbox): validate filesystem policy anchors (#5278)",
     "CreateSandbox with FilesystemPolicy read_only=[/srv/data], read_write=[/tmp/rwdir]",
@@ -27,7 +30,7 @@
    "desc": "W3C traceparent delivered to sandbox env",
    "ok": true,
    "detail": "TRACEPARENT round-trip: '00-ce6aeb4fce4f0d185ae4c8f9cb12639e-42e0b743d3d7a5e2-01'",
-   "prose": "Upstream #2931 forwards W3C trace context (TRACEPARENT/TRACESTATE) from CLI to gateway for CI trace continuity. I set a synthetic traceparent in the sandbox env spec and echoed it back from inside the sandbox: it arrived byte-for-byte. The user-visible half of trace continuity — context reaching the workload — holds on this gateway; server-side OTel correlation isn't observable from here.",
+   "prose": "Upstream #2931 forwards W3C trace context (TRACEPARENT/TRACESTATE) from CLI to gateway for CI trace continuity. I set a synthetic traceparent in the sandbox env spec and echoed it back from inside the sandbox: it arrived byte-for-byte. The user-visible half of trace continuity \u2014 context reaching the workload \u2014 holds on this gateway; server-side OTel correlation isn't observable from here.",
    "steps": [
     "grep upstream commits; identify feat(cli): forward TRACEPARENT/TRACESTATE (#2931)",
     "CreateSandbox with env TRACEPARENT=00-ce6aeb4f...-42e0b743...-01 (synthetic W3C trace context)",
@@ -56,7 +59,7 @@
    "desc": "cycle=cycle1592 matches only this sandbox",
    "ok": true,
    "detail": "[seed 1794161592] ready=ready match=True",
-   "prose": "A sandbox created with this cycle's random label pair was matched by a label selector listing — only the labeled sandbox returned. Label selectors are how workloads find their sandboxes; a regression here would break orchestration quietly.",
+   "prose": "A sandbox created with this cycle's random label pair was matched by a label selector listing \u2014 only the labeled sandbox returned. Label selectors are how workloads find their sandboxes; a regression here would break orchestration quietly.",
    "steps": [
     "Generate random label value cycle<seed>",
     "CreateSandbox with that label",
@@ -70,7 +73,7 @@
    "desc": "5 parallel streams with computed outputs",
    "ok": true,
    "detail": "[seed 1794161620] width=5 all-correct=True",
-   "prose": "Five concurrent exec streams against one sandbox, each returning a computed value seeded per cycle. All five outputs were correct, so the gateway serialized the streams without crosstalk — the concurrency path stays healthy under fan-out.",
+   "prose": "Five concurrent exec streams against one sandbox, each returning a computed value seeded per cycle. All five outputs were correct, so the gateway serialized the streams without crosstalk \u2014 the concurrency path stays healthy under fan-out.",
    "steps": [
     "Random concurrency width 2-5 (this run: 5)",
     "CreateSandbox, wait Ready",

@@ -4,7 +4,10 @@
   "timestamp": "2026-11-08T16:08:10Z",
   "battery": "Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.",
   "model": "GLM-5.3 (rits/zai-org/glm-5-3)",
-  "title": "Model comparison A: GLM-5.3 runs the variable battery"
+  "title": "Model comparison A: GLM-5.3 runs the variable battery",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261107T055526000000Z",
+  "cost": "not tracked (zero-cost provider)"
  },
  "results": [
   {

@@ -3,7 +3,11 @@
   "run": "battery-2",
   "timestamp": "2026-11-07T09:55:00Z",
   "battery": "Use-case battery 2 \u2014 sandbox templates (create/list/instantiate/delete), service exposure (ExposeService/ListServices), label selectors, 4 concurrent exec streams, FS stress (200 files), UpdateSandbox over gRPC-web. Run after overnight broker recovery.",
-  "title": "Reusable pieces: templates, service exposure, labels, concurrency"
+  "title": "Reusable pieces: templates, service exposure, labels, concurrency",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261105T215420000000Z",
+  "model": "GLM-5.3 (session)",
+  "cost": "not tracked (zero-cost provider)"
  },
  "results": [
   {

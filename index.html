@@ -100,20 +100,24 @@ function runIntro(run) {
 }
 
 function runEnv(run) {
+  const m = run.meta;
+  // page-level metadata first (gateway/hypershell/model/cost are per-run)
+  const env = {};
+  if (m.gateway_version) env['gateway version'] = m.gateway_version;
+  if (m.hypershell_version) env['hypershell version'] = m.hypershell_version;
+  if (m.model) env['model used'] = m.model;
+  if (m.cost) env['cost of executing'] = m.cost;
   const curated = {
     'battery-1': {time:'2026-11-06 12:10–12:19 UTC', gateway:'gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)', image:'nvcr.io/nvidia/base/ubuntu:24.04', credentials:'OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, gateway audience)', transport:'gRPC-web over HTTPS (hand-encoded protobuf, curl)', conditions:'First battery after egress approvals; spawn-broker had wedged twice that day'},
     'battery-2': {time:'2026-11-07 09:45–10:00 UTC', gateway:'gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)', image:'nvcr.io/nvidia/base/ubuntu:24.04', credentials:'same SA; per-call token refresh', transport:'gRPC-web; schemas verified against proto before encoding', conditions:'After overnight broker recovery (16h wedge)'},
     'battery-3': {time:'2026-11-08 14:04–14:15 UTC', gateway:'gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)', image:'nvcr.io/nvidia/base/ubuntu:24.04', credentials:'SA for gateway RPCs; owner platform:admin token for api-server reads', transport:'gRPC-web + REST (api-server)', conditions:'SA token expired mid-battery (documented as finding)'},
   };
-  if (curated[run.meta.run]) return curated[run.meta.run];
-  const env = {};
+  if (curated[run.meta.run]) return Object.assign({}, curated[run.meta.run], env);
   env.time = (run.meta.timestamp || '').replace('T',' ').replace('Z',' UTC');
-  env.gateway = 'gw-openshell-87df4730adb6b9b6 (kubernetes driver)';
   env.image = 'nvcr.io/nvidia/base/ubuntu:24.04';
   env.credentials = 'OpenShellGatewayServiceAccount (client-credentials, 5-min JWT)';
   env.transport = 'gRPC-web over HTTPS (hand-encoded protobuf, curl)';
-  if (run.meta.model) env['runner model'] = run.meta.model;
-  env.conditions = run.meta.battery || 'variable seeded battery';
+  if (run.meta.battery) env.conditions = run.meta.battery;
   return env;
 }
 
@@ -194,7 +198,6 @@ async function renderCatalog() {
 $('#built').textContent = new Date().toISOString().replace('T',' ').slice(0,16) + ' UTC';
 const page = location.pathname.split('/').pop() || 'index.html';
 if (page === 'catalog.html') renderCatalog();
-else if (page === 'entry.html') renderEntry();
 else renderIndex();
 </script>
 </body></html>

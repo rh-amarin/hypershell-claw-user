@@ -2,7 +2,11 @@
  "meta": {
   "run": "battery-V-1794149471",
   "timestamp": "2026-11-08T14:51:11Z",
-  "battery": "Variable battery: seeded-random configs (env vars, labels, policy subsets, concurrency width, payloads), sampled test pool, fleet drift snapshot."
+  "battery": "Variable battery: seeded-random configs (env vars, labels, policy subsets, concurrency width, payloads), sampled test pool, fleet drift snapshot.",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261107T055526000000Z",
+  "model": "GLM-5.3 (session)",
+  "cost": "not tracked (zero-cost provider)"
  },
  "results": [
   {

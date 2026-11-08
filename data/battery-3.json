@@ -3,7 +3,11 @@
   "run": "battery-3",
   "timestamp": "2026-11-08T14:15:00Z",
   "battery": "Assorted use cases: FS persistence across stop/start, suspend/resume, SSH session creation, API-server fleet surface (36 gateways, 4 clusters, roles), version distribution, sandbox load stats, label round-trip, NOT_FOUND handling.",
-  "title": "The edge cases: ephemeral FS across restarts, unsupported suspend, fleet stats"
+  "title": "The edge cases: ephemeral FS across restarts, unsupported suspend, fleet stats",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261107T055526000000Z (released that morning)",
+  "model": "GLM-5.3 (session)",
+  "cost": "not tracked (zero-cost provider)"
  },
  "results": [
   {

@@ -4,7 +4,10 @@
   "timestamp": "2026-11-08T16:14:00Z",
   "battery": "Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.",
   "model": "gpt-6.1-sol",
-  "title": "Model comparison B: gpt-6.1-sol runs the variable battery"
+  "title": "Model comparison B: gpt-6.1-sol runs the variable battery",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261107T055526000000Z",
+  "cost": "not tracked (zero-cost provider)"
  },
  "results": [
   {

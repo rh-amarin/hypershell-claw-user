@@ -3,7 +3,11 @@
   "run": "battery-1",
   "timestamp": "2026-11-06T12:19:00Z",
   "battery": "First battery \u2014 lifecycle, policies, defaults, error paths. Sandbox create/ready/exec/delete, networkPolicies (owner's sample format), deny-all default, multi-rule policies + env injection, stop/start, duplicate rejection, invalid image, exec timeout.",
-  "title": "First contact: sandbox lifecycle, network policies, and failure modes"
+  "title": "First contact: sandbox lifecycle, network policies, and failure modes",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "hypershell_version": "release-bundle-20261105T215420000000Z (cluster at run time)",
+  "model": "GLM-5.3 (session)",
+  "cost": "not tracked (internal enmaas, zero-cost provider)"
  },
  "results": [
   {
