@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Exploration journal</title>
-<style>
+<title>Test catalog</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Georgia,'Times New Roman',serif;background:#faf9f6;color:#1a1d23;line-height:1.7;max-width:820px;margin:0 auto;padding:2rem 1.25rem 4rem;font-size:1.02rem}
 header{border-bottom:3px solid #b8860b;padding-bottom:1.2rem;margin-bottom:2rem}
@@ -17,7 +16,6 @@ a.entrylink .etitle{font-weight:700;font-family:-apple-system,sans-serif;font-si
 a.entrylink .emeta{font-family:ui-monospace,monospace;font-size:.72rem;color:#8a90a2;margin-top:.15rem}
 a.entrylink .escore{float:right;font-weight:800;font-family:-apple-system,sans-serif;font-size:.85rem}
 .escore.ok{color:#1a8f4a}.escore.bad{color:#c62828}.escore.mixed{color:#b26a00}
-#status{font-family:-apple-system,sans-serif;font-size:.85rem;color:#8a90a2;margin-bottom:1rem}
 article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .rundate{font-family:ui-monospace,monospace;font-size:.75rem;color:#8a90a2;margin-bottom:.8rem}
 .runintro{color:#4a5060;margin-bottom:1.2rem;max-width:44rem}
@@ -47,152 +45,14 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .cat .hist{font-size:.72rem;color:#8a90a2;font-family:ui-monospace,monospace}
 .cat .h-ok{color:#1a8f4a}.cat .h-bad{color:#c62828}
 footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a90a2;font-size:.78rem;font-family:-apple-system,sans-serif}
-.env{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
 </style></head><body>
 <header>
 <div class="kicker">Hypershell exploration journal</div>
 <h1>Notes from inside the sandbox</h1>
 <div class="sub">What an AI agent learned by actually using the OpenShell platform — written up for a colleague.</div>
 </header>
-<nav><a href="index.html" id="nav-index">Journal</a><a href="catalog.html" id="nav-catalog">Catalog</a></nav>
-<div id="status">Loading run data…</div>
-<main id="content"></main>
-<footer>Maintained by the Lemon agent · catalog and entries built in-browser from structured JSON · <span id="built"></span></footer>
-<script>
-// ---- shared runtime: fetch manifest + runs, render dynamically ----
-const $ = (s) => document.querySelector(s);
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-async function loadAll() {
-  const resp = await fetch('data/manifest.json');
-  if (!resp.ok) throw new Error('manifest fetch failed: ' + resp.status);
-  const manifest = await resp.json();
-  const runs = [];
-  for (const m of manifest) {
-    try {
-      const r = await fetch(m.file);
-      if (!r.ok) continue;
-      const data = await r.json();
-      data.meta = data.meta || {};
-      data.meta.run = data.meta.run || m.run;
-      data.meta.timestamp = data.meta.timestamp || m.timestamp;
-      data.meta.title = data.meta.title || m.title;
-      data.meta.model = data.meta.model || m.model;
-      const passed = data.results.filter(t => t.ok).length;
-      runs.push({...data, passed, total: data.results.length});
-    } catch (e) { console.warn('skip', m.file, e); }
-  }
-  return runs;  // manifest order = oldest first
-}
-
-function runIntro(run) {
-  const intros = {
-    'battery-1': 'First contact with the sandbox API: create, run, clean up — plus the failure modes a new user hits first.',
-    'battery-2': 'Day two, schemas verified this time: templates, service exposure, labels, concurrency, and an FS stress test.',
-    'battery-3': 'Assorted use cases: does the filesystem survive stop/start? (No.) Suspend/resume on k8s? (Not implemented.) SSH sessions and fleet stats.',
-  };
-  if (intros[run.meta.run]) return intros[run.meta.run];
-  if (run.meta.run.includes('battery-V')) return 'A variable cycle: seeded-random configs so no two runs test the same thing, plus a fleet drift snapshot.';
-  if (run.meta.run.includes('battery-MA') || run.meta.run.includes('battery-MB')) return 'Model-comparison cycle: the seeded variable battery run under a specific model, with that model writing its own case notes and self-report.';
-  return run.meta.battery || '';
-}
-
-function runEnv(run) {
-  const curated = {
-    'battery-1': {time:'2026-11-06 12:10–12:19 UTC', gateway:'gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2, kubernetes driver)', image:'nvcr.io/nvidia/base/ubuntu:24.04', credentials:'OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, gateway audience)', transport:'gRPC-web over HTTPS (hand-encoded protobuf, curl)', conditions:'First battery after egress approvals; spawn-broker had wedged twice that day'},
-    'battery-2': {time:'2026-11-07 09:45–10:00 UTC', gateway:'gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)', image:'nvcr.io/nvidia/base/ubuntu:24.04', credentials:'same SA; per-call token refresh', transport:'gRPC-web; schemas verified against proto before encoding', conditions:'After overnight broker recovery (16h wedge)'},
-    'battery-3': {time:'2026-11-08 14:04–14:15 UTC', gateway:'gw-openshell-87df4730adb6b9b6 (0.1.6-rhaiv.2)', image:'nvcr.io/nvidia/base/ubuntu:24.04', credentials:'SA for gateway RPCs; owner platform:admin token for api-server reads', transport:'gRPC-web + REST (api-server)', conditions:'SA token expired mid-battery (documented as finding)'},
-  };
-  if (curated[run.meta.run]) return curated[run.meta.run];
-  const env = {};
-  env.time = (run.meta.timestamp || '').replace('T',' ').replace('Z',' UTC');
-  env.gateway = 'gw-openshell-87df4730adb6b9b6 (kubernetes driver)';
-  env.image = 'nvcr.io/nvidia/base/ubuntu:24.04';
-  env.credentials = 'OpenShellGatewayServiceAccount (client-credentials, 5-min JWT)';
-  env.transport = 'gRPC-web over HTTPS (hand-encoded protobuf, curl)';
-  if (run.meta.model) env['runner model'] = run.meta.model;
-  env.conditions = run.meta.battery || 'variable seeded battery';
-  return env;
-}
-
-function caseHtml(t, env) {
-  const mark = t.ok ? '✓ passed' : '✗ failed/finding';
-  const prose = t.prose || t.desc || t.title;
-  const steps = (t.steps || []).map(s => `<li>${esc(s)}</li>`).join('');
-  const stepsHtml = steps ? `<div class="steps"><div class="steps-title">Operations performed</div><ol>${steps}</ol></div>` : '';
-  const envLines = Object.entries(env || {}).map(([k,v]) => `${k}: ${v}`).join('\n');
-  const det = (t.detail || steps || envLines) ? `<details><summary>Steps, details & environment</summary><div class="cbody">${stepsHtml}<p>${esc(t.detail)}</p><div class="kv">technical detail (raw)\n${esc(t.detail)}\n\nenvironment & conditions:\n${esc(envLines)}</div></div></details>` : '';
-  return `<div class="case"><div class="chead"><span class="cid">${esc(t.id)}</span><span class="ctitle">${esc(t.title)}</span><span class="cmark ${t.ok?'ok':'bad'}">${mark}</span></div><p>${esc(prose)}</p>${det}</div>`;
-}
-
-function displayTitle(run) {
-  if (run.meta.title) return run.meta.title;
-  const tested = [...new Set(run.results.map(t => t.id.replace('TV-','').replace('MODEL-SELF','self-report')))].sort().join(', ');
-  return `${run.total} cases (${tested}) — ${run.passed}/${run.total} passed`;
-}
-
-function slug(run) {
-  const m = (run.meta.timestamp || '').match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
-  if (m) return `${m[1]}${m[2]}${m[3]}-${m[4]}${m[5]}`;
-  return run.meta.run.toLowerCase().replace(/[^a-z0-9-]+/g,'-');
-}
-
-// ---- index page ----
-async function renderIndex() {
-  $('#nav-index').classList.add('active');
-  const runs = await loadAll();
-  $('#status').textContent = `${runs.length} entries, ${runs.reduce((a,r)=>a+r.passed,0)}/${runs.reduce((a,r)=>a+r.total,0)} cases passed`;
-  const catalog = {};
-  runs.forEach(r => r.results.forEach(t => { (catalog[t.id] = catalog[t.id] || {hist:[]}).hist.push({run:r.meta.run, ok:t.ok}); }));
-  const links = runs.slice().reverse().map(run => {
-    const cls = run.passed === run.total ? 'ok' : (run.passed === 0 ? 'bad' : 'mixed');
-    const mt = run.meta.model ? ` · ${run.meta.model}` : '';
-    return `<a class="entrylink" href="entry.html?run=${encodeURIComponent(run.meta.run)}"><span class="escore ${cls}">${run.passed}/${run.total}</span><div class="etitle">${esc(displayTitle(run))}</div><div class="emeta">${esc(run.meta.run)} · ${esc(run.meta.timestamp)}${esc(mt)}</div></a>`;
-  }).join('\n');
-  $('#content').innerHTML = `<p style="font-family:-apple-system,sans-serif;color:#4a5060;font-size:.92rem;max-width:44rem;margin-bottom:1.5rem">An ongoing real-user simulation of the <b>hypershell</b> platform — ${runs.length} entries, ${runs.reduce((a,r)=>a+r.passed,0)}/${runs.reduce((a,r)=>a+r.total,0)} cases passed, ${Object.keys(catalog).length} unique test cases. Each entry is a full run write-up.</p>${links}`;
-}
-
-// ---- entry page (single template, run chosen by ?run=) ----
-async function renderEntry() {
-  $('#nav-index').classList.add('active');
-  const params = new URLSearchParams(location.search);
-  const want = params.get('run');
-  const runs = await loadAll();
-  const run = runs.find(r => r.meta.run === want) || runs[runs.length - 1];
-  document.title = displayTitle(run);
-  const env = runEnv(run);
-  const mt = run.meta.model ? ` · model: ${esc(run.meta.model)}` : '';
-  $('#status').remove();
-  $('#content').innerHTML = `<a class="backlink" href="index.html">← all entries</a>
-<article class="run"><h2>${esc(displayTitle(run))}</h2>
-<div class="rundate">${esc(run.meta.run)} · ${esc(run.meta.timestamp)} · ${run.passed}/${run.total} passed${mt}</div>
-<p class="runintro">${esc(runIntro(run))}</p>
-${run.results.map(t => caseHtml(t, env)).join('')}</article>`;
-}
-
-// ---- catalog page ----
-async function renderCatalog() {
-  $('#nav-catalog').classList.add('active');
-  const runs = await loadAll();
-  const catalog = {};
-  runs.forEach(r => r.results.forEach(t => {
-    if (!catalog[t.id]) catalog[t.id] = {id: t.id, title: t.title, desc: t.desc || '', hist: []};
-    catalog[t.id].hist.push({run: r.meta.run, ok: t.ok});
-  }));
-  $('#status').textContent = `${Object.keys(catalog).length} unique test cases across ${runs.length} runs`;
-  const cats = Object.values(catalog).sort((a,b) => a.id.localeCompare(b.id)).map(c => {
-    const p = c.hist.filter(h => h.ok).length, n = c.hist.length;
-    const cls = p === n ? 'ok' : (p === 0 ? 'bad' : 'mixed');
-    const hist = c.hist.map(h => `<span class="${h.ok?'h-ok':'h-bad'}">${esc(h.run)}:${h.ok?'✓':'✗'}</span>`).join(' · ');
-    return `<div class="cat"><div class="chead"><span class="cat-id">${esc(c.id)}</span><span class="cat-title">${esc(c.title)}</span><span class="cat-pass ${cls}">${p}/${n}</span></div><p>${esc(c.desc)}</p><div class="hist">${hist}</div></div>`;
-  }).join('');
-  $('#content').innerHTML = `<section style="font-family:-apple-system,sans-serif"><p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">Every distinct case ever executed, with all-time pass rate and per-run history — rebuilt from run data each time you open this page.</p></section>${cats}`;
-}
-
-$('#built').textContent = new Date().toISOString().replace('T',' ').slice(0,16) + ' UTC';
-const page = location.pathname.split('/').pop() || 'index.html';
-if (page === 'catalog.html') renderCatalog();
-else if (page === 'entry.html') renderEntry();
-else renderIndex();
-</script>
+<nav><a href="index.html" class="">Journal</a>
+<a href="catalog.html" class="active">Catalog</a></nav>
+<section style="font-family:-apple-system,sans-serif"><p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">Every distinct case ever executed, with all-time pass rate and per-run history.</p></section><div class="cat"><div class="chead"><span class="cat-id">N1</span><span class="cat-title">Filesystem policy anchors (upstream #5278)</span><span class="cat-pass ok">1/1</span></div><p>Valid absolute RO/RW anchors accepted+stored; relative anchor rejected</p><div class="hist"><span class="h-ok">battery-V-1794161536:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">N2</span><span class="cat-title">Trace-context env forwarding (upstream #2931)</span><span class="cat-pass ok">1/1</span></div><p>W3C traceparent delivered to sandbox env</p><div class="hist"><span class="h-ok">battery-V-1794161536:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T1</span><span class="cat-title">ListSandboxes pagination</span><span class="cat-pass ok">1/1</span></div><p>List with page_size=100 on default workspace</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T2</span><span class="cat-title">TTY sandbox with custom command</span><span class="cat-pass ok">1/1</span></div><p>Create with tty=true, command sleep 600, label test=tty-config</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T3</span><span class="cat-title">No-policy sandbox (deny-all)</span><span class="cat-pass ok">1/1</span></div><p>Create with NO network policies; expect all egress denied</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T4</span><span class="cat-title">Multi-rule networkPolicies + env injection</span><span class="cat-pass ok">1/1</span></div><p>Two rules (web, pkg) + env FOO=bar42; verify env in exec</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T5</span><span class="cat-title">Stop/Start lifecycle</span><span class="cat-pass ok">1/1</span></div><p>StopSandbox then StartSandbox on lemon-multi-policy</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T6</span><span class="cat-title">Duplicate name rejected</span><span class="cat-pass ok">1/1</span></div><p>Create second sandbox named lemon-tty-test</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T7</span><span class="cat-title">Invalid image handling</span><span class="cat-pass ok">1/1</span></div><p>Create with nonexistent image does-not-exist-xyz:9.9.9</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">T8</span><span class="cat-title">Exec execution_timeout enforced</span><span class="cat-pass ok">1/1</span></div><p>ExecSandbox sleep 30 with 3s execution_timeout</p><div class="hist"><span class="h-ok">battery-1:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">TV-CONC</span><span class="cat-title">Random-width concurrent exec</span><span class="cat-pass ok">1/1</span></div><p>5 parallel streams with computed outputs</p><div class="hist"><span class="h-ok">battery-V-1794161536:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">TV-ENV</span><span class="cat-title">Random env injection</span><span class="cat-pass ok">1/1</span></div><p>Two random env vars verified in exec</p><div class="hist"><span class="h-ok">battery-V-1794161536:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">TV-LBL</span><span class="cat-title">Random label selector</span><span class="cat-pass ok">1/1</span></div><p>cycle=cycle1592 matches only this sandbox</p><div class="hist"><span class="h-ok">battery-V-1794161536:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U1a</span><span class="cat-title">Template: create lemon-template-1</span><span class="cat-pass ok">1/1</span></div><p>SandboxWorkloadTemplate with ubuntu image + env</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U2a</span><span class="cat-title">Service: web sandbox ready</span><span class="cat-pass ok">1/1</span></div><p>Bash /dev/tcp HTTP responder sandbox</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U2b</span><span class="cat-title">Service: ExposeService 8899</span><span class="cat-pass ok">1/1</span></div><p>Expose lemon-http on target_port 8899 with domain=true</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U2c</span><span class="cat-title">Service: fetch exposed URL</span><span class="cat-pass bad">0/1</span></div><p>GET https://default--lemon-web--lemon-http.openshell.localhost:8...</p><div class="hist"><span class="h-bad">battery-2:✗</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U2d</span><span class="cat-title">Service: listed</span><span class="cat-pass ok">1/1</span></div><p>ListServices filtered by sandbox</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U3</span><span class="cat-title">Labels: selector filtering</span><span class="cat-pass ok">1/1</span></div><p>List with label_selector team=lemon</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U3b</span><span class="cat-title">Labels: empty selector result</span><span class="cat-pass ok">1/1</span></div><p>List with team=nobody matches nothing</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U4</span><span class="cat-title">Exec: 4 concurrent streams</span><span class="cat-pass ok">1/1</span></div><p>Parallel ExecSandbox on one sandbox</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U5</span><span class="cat-title">FS stress: 200 files</span><span class="cat-pass ok">1/1</span></div><p>Create 200 files, count, du</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U6</span><span class="cat-title">Update stopped sandbox (no-op)</span><span class="cat-pass bad">0/1</span></div><p>UpdateSandbox with no fields = resume pending op</p><div class="hist"><span class="h-bad">battery-2:✗</span></div></div><div class="cat"><div class="chead"><span class="cat-id">U6b</span><span class="cat-title">Restart after update attempt</span><span class="cat-pass ok">1/1</span></div><p>StartSandbox then wait ready</p><div class="hist"><span class="h-ok">battery-2:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V1</span><span class="cat-title">Filesystem persists across stop/start</span><span class="cat-pass bad">0/1</span></div><p>Write file, stop, start, read back</p><div class="hist"><span class="h-bad">battery-3:✗</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V2</span><span class="cat-title">Suspend / Resume lifecycle</span><span class="cat-pass bad">0/1</span></div><p>Suspend, verify state, resume, wait ready</p><div class="hist"><span class="h-bad">battery-3:✗</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V3</span><span class="cat-title">SSH session creation</span><span class="cat-pass ok">1/1</span></div><p>CreateSshSession on ready sandbox</p><div class="hist"><span class="h-ok">battery-3:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V4</span><span class="cat-title">API-server fleet surface</span><span class="cat-pass ok">1/1</span></div><p>List gateways, clusters, roles via api-server with refreshed token</p><div class="hist"><span class="h-ok">battery-3:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V5</span><span class="cat-title">Fleet version distribution</span><span class="cat-pass ok">1/1</span></div><p>Group 36 gateways by version</p><div class="hist"><span class="h-ok">battery-3:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V6</span><span class="cat-title">Fleet sandbox load</span><span class="cat-pass ok">1/1</span></div><p>Sum active sandbox counts</p><div class="hist"><span class="h-ok">battery-3:✓</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V7</span><span class="cat-title">Label round-trip with policy</span><span class="cat-pass bad">0/1</span></div><p>Labeled sandbox w/ api.hyp2 policy; selector battery=three</p><div class="hist"><span class="h-bad">battery-3:✗</span></div></div><div class="cat"><div class="chead"><span class="cat-id">V8</span><span class="cat-title">NOT_FOUND on absent sandbox</span><span class="cat-pass bad">0/1</span></div><p>GetSandbox for nonexistent name</p><div class="hist"><span class="h-bad">battery-3:✗</span></div></div>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 18:15 UTC</footer>
 </body></html>
