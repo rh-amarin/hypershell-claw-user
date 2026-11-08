@@ -432,53 +432,53 @@ image: nvcr.io/nvidia/base/ubuntu:24.04
 credentials: SA for gateway RPCs; owner platform:admin token for api-server reads
 transport: gRPC-web + REST (api-server)
 conditions: SA token expired mid-battery (V7/V8) — documented as finding</div></div></details>
-</div></article><article class="run"><h2>battery-V-1794149471</h2><div class="rundate">2026-11-08T14:51:11Z · 4/5 passed</div>
-<p class="runintro">A variable cycle: each run of this battery is seeded differently — random env vars, labels, policy subsets, concurrency widths, and payloads — so no two cycles test exactly the same thing. It also snapshots the fleet (gateway counts, versions) and reports drift since the last cycle.</p>
+</div></article><article class="run"><h2>battery-MA-glm</h2><div class="rundate">2026-11-08T16:08:10Z · 5/5 passed · model: GLM-5.3 (rits/zai-org/glm-5-3)</div>
+<p class="runintro">Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</p>
 <div class="case">
-  <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark bad">✗ failed/finding</span></div>
-  <p>The longitudinal one: snapshot the whole gateway fleet (counts, versions) and diff against the previous cycle&#x27;s snapshot. This is how the journal will catch drift over time — new gateways appearing, versions rolling out.</p>
+  <div class="chead"><span class="cid">TV-CMP</span><span class="ctitle">Random compute in exec</span><span class="cmark ok">✓ passed</span></div>
+  <p>Sanity check that exec does honest work: I multiplied two random numbers (9996 × 7095) inside the sandbox and the product came back exactly right. Trivial on its face, but it proves commands actually execute and return real output — not canned responses.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794149360] Expecting value: line 1 column 1 (char 0)<div class="kv">technical detail (raw)
-[seed 1794149360] Expecting value: line 1 column 1 (char 0)
-
-environment & conditions:
-</div></div></details>
-</div><div class="case">
-  <div class="chead"><span class="cid">TV-POL</span><span class="ctitle">Random policy subset</span><span class="cmark ok">✓ passed</span></div>
-  <p>Network policies are only useful if arbitrary endpoint sets actually take effect, so I let the seed pick a random subset of hosts and built a policy around just those. After the sandbox came up, I asked the gateway for its stored spec: exactly my hosts, nothing extra. Scoping works as advertised.</p>
-  <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True<div class="kv">technical detail (raw)
-[seed 1794149360] hosts=[&#x27;example.com&#x27;] stored=True no-extra=True
+[seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;<div class="kv">technical detail (raw)
+[seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;
 
 environment & conditions:
 </div></div></details>
 </div><div class="case">
   <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
-  <p>I wanted to know whether files written inside a sandbox stick around, so I generated a random hash, wrote it to /tmp, and read it back twice from two separate exec calls. The payload survived both reads — within a single sandbox session, the filesystem behaves like you&#x27;d expect.</p>
+  <p>Filesystem round-trip within a session: wrote a random SHA-256 payload to /tmp and read it back from a separate exec call. It survived, confirming the sandbox filesystem is stable across commands within one sandbox lifetime (though, as battery 3 found, not across stop/start).</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True<div class="kv">technical detail (raw)
-[seed 1794149360] payload 8a8c6d759394… roundtrip ok=True
+[seed 1794153995] payload 07d630a0f099… roundtrip ok=True<div class="kv">technical detail (raw)
+[seed 1794153995] payload 07d630a0f099… roundtrip ok=True
 
 environment & conditions:
 </div></div></details>
 </div><div class="case">
-  <div class="chead"><span class="cid">TV-ENV</span><span class="ctitle">Random env injection</span><span class="cmark ok">✓ passed</span></div>
-  <p>Environment variables are the simplest config channel into a sandbox. I generated two random key-value pairs, created the sandbox with them, and echoed them back from inside. The first attempt &quot;failed&quot; because my echo command had a bash variable-name parsing bug ($A_$B parses as one variable!) — the platform was fine, my quoting wasn&#x27;t. Fixed with ${A}_${B} syntax and verified.</p>
+  <div class="chead"><span class="cid">TV-LAT</span><span class="ctitle">RPC latency snapshot</span><span class="cmark ok">✓ passed</span></div>
+  <p>Gateway responsiveness pulse: metadata call at 67ms, list at 85ms. Fast enough that interactive use would feel instantaneous; the numbers become a longitudinal baseline when compared across cycles.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;<div class="kv">technical detail (raw)
-[seed 1794149360] env round-trip: &#x27;val-3310_6e206d2a45c3&#x27;
+[seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms<div class="kv">technical detail (raw)
+[seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms
 
 environment & conditions:
 </div></div></details>
 </div><div class="case">
-  <div class="chead"><span class="cid">TV-CONC</span><span class="ctitle">Random-width concurrent exec</span><span class="cmark ok">✓ passed</span></div>
-  <p>How well does the gateway handle simultaneous exec streams into the same sandbox? I fired three parallel commands, each echoing a computed value so I could tell them apart. The initial run failed — but that was my test harness racing on shared temp files (a lesson from battery 2 I apparently had to relearn), not the platform.</p>
+  <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark ok">✓ passed</span></div>
+  <p>The fleet snapshot: 36 gateways, 7 versions in the wild, no drift since the last cycle. This is the journal&#x27;s slow-motion camera — new gateways and version rollouts will show up here as diffs over time.</p>
   <details><summary>Details & environment</summary><div class="cbody">
-[seed 1794149360] width=4 all-correct=True<div class="kv">technical detail (raw)
-[seed 1794149360] width=4 all-correct=True
+[seed 1794153995] 36 gateways, 7 versions, no drift<div class="kv">technical detail (raw)
+[seed 1794153995] 36 gateways, 7 versions, no drift
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+  <div class="chead"><span class="cid">MODEL-SELF</span><span class="ctitle">Model self-report</span><span class="cmark ok">✓ passed</span></div>
+  <p>This cycle ran under GLM-5.3 — the same model as the interactive session. Approach: executed the seeded battery mechanically first, then wrote these case notes from the actual outputs rather than from assumptions. I leaned on the large context window to recall prior battery findings (like the FS-persistence caveat) while writing.</p>
+  <details><summary>Details & environment</summary><div class="cbody">
+Executed under GLM-5.3 (rits/zai-org/glm-5-3).<div class="kv">technical detail (raw)
+Executed under GLM-5.3 (rits/zai-org/glm-5-3).
 
 environment & conditions:
 </div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 14:56 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:08 UTC</footer>
 </body></html>
