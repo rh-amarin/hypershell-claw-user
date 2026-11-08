@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>battery-MA-glm</title><style>
+<title>Model comparison A: GLM-5.3 runs the variable battery</title><style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:Georgia,'Times New Roman',serif;background:#faf9f6;color:#1a1d23;line-height:1.7;max-width:820px;margin:0 auto;padding:2rem 1.25rem 4rem;font-size:1.02rem}
 header{border-bottom:3px solid #b8860b;padding-bottom:1.2rem;margin-bottom:2rem}
@@ -50,8 +50,8 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 <nav><a href="index.html" class="active">Journal</a>
 <a href="catalog.html" class="">Catalog</a></nav>
 <a class="backlink" href="../index.html">← all entries</a>
-<article class="run"><h2>battery-MA-glm</h2>
-<div class="rundate">2026-11-08T16:08:10Z · 5/5 passed · model: GLM-5.3 (rits/zai-org/glm-5-3)</div>
+<article class="run"><h2>Model comparison A: GLM-5.3 runs the variable battery</h2>
+<div class="rundate">battery-MA-glm · 2026-11-08T16:08:10Z · 5/5 passed · model: GLM-5.3 (rits/zai-org/glm-5-3)</div>
 <p class="runintro">Model-comparison cycle: the seeded variable battery run under a specific model, with that model writing its own case notes and self-report.</p>
 <div class="case">
 <div class="chead"><span class="cid">TV-CMP</span><span class="ctitle">Random compute in exec</span><span class="cmark ok">✓ passed</span></div>
@@ -61,7 +61,13 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 [seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;
 
 environment & conditions:
-</div></div></details>
+time: 2026-11-08 16:08:10 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (kubernetes driver) — measured latencies in this run: 
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT); runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+conditions: Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
 <p>Filesystem round-trip within a session: wrote a random SHA-256 payload to /tmp and read it back from a separate exec call. It survived, confirming the sandbox filesystem is stable across commands within one sandbox lifetime (though, as battery 3 found, not across stop/start).</p>
@@ -70,7 +76,13 @@ environment & conditions:
 [seed 1794153995] payload 07d630a0f099… roundtrip ok=True
 
 environment & conditions:
-</div></div></details>
+time: 2026-11-08 16:08:10 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (kubernetes driver) — measured latencies in this run: 
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT); runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+conditions: Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">TV-LAT</span><span class="ctitle">RPC latency snapshot</span><span class="cmark ok">✓ passed</span></div>
 <p>Gateway responsiveness pulse: metadata call at 67ms, list at 85ms. Fast enough that interactive use would feel instantaneous; the numbers become a longitudinal baseline when compared across cycles.</p>
@@ -79,7 +91,13 @@ environment & conditions:
 [seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms
 
 environment & conditions:
-</div></div></details>
+time: 2026-11-08 16:08:10 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (kubernetes driver) — measured latencies in this run: 
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT); runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+conditions: Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark ok">✓ passed</span></div>
 <p>The fleet snapshot: 36 gateways, 7 versions in the wild, no drift since the last cycle. This is the journal&#x27;s slow-motion camera — new gateways and version rollouts will show up here as diffs over time.</p>
@@ -88,7 +106,13 @@ environment & conditions:
 [seed 1794153995] 36 gateways, 7 versions, no drift
 
 environment & conditions:
-</div></div></details>
+time: 2026-11-08 16:08:10 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (kubernetes driver) — measured latencies in this run: 
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT); runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+conditions: Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">MODEL-SELF</span><span class="ctitle">Model self-report</span><span class="cmark ok">✓ passed</span></div>
 <p>This cycle ran under GLM-5.3 — the same model as the interactive session. Approach: executed the seeded battery mechanically first, then wrote these case notes from the actual outputs rather than from assumptions. I leaned on the large context window to recall prior battery findings (like the FS-persistence caveat) while writing.</p>
@@ -97,7 +121,13 @@ Executed under GLM-5.3 (rits/zai-org/glm-5-3).<div class="kv">technical detail (
 Executed under GLM-5.3 (rits/zai-org/glm-5-3).
 
 environment & conditions:
-</div></div></details>
+time: 2026-11-08 16:08:10 UTC
+gateway: gw-openshell-87df4730adb6b9b6 (kubernetes driver) — measured latencies in this run: 
+image: nvcr.io/nvidia/base/ubuntu:24.04
+credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT); runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
+runner model: GLM-5.3 (rits/zai-org/glm-5-3)
+conditions: Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:18 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:32 UTC</footer>
 </body></html>
