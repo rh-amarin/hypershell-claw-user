@@ -1,0 +1,58 @@
+{
+ "meta": {
+  "run": "battery-V-1794174835",
+  "timestamp": "2026-11-08T21:56:13Z",
+  "title": "Upstream-inspired cycle: workload identity + regressions",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-RUNAS (process policy run_as_user, upstream #5192) + regressions TV-ENV, TV-LBL, TV-CONC, T4",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794174835
+ },
+ "results": [
+  {
+   "id": "NX-RUNAS",
+   "title": "Process policy run_as_user",
+   "desc": "Sandbox with ProcessPolicy.run_as_user=nobody; verify exec runs as nobody",
+   "ok": true,
+   "detail": "run_as_user='nobody' rejected (grpc=3): \"run_as_user must be 'sandbox' or a numeric UID/GID\"; run_as_user='65534' accepted, sandbox Ready, exec id -u -> '1000880000'",
+   "prose": "Upstream #5192 hardened workload identity handling, so I probed the process policy's run_as_user field. The literal username 'nobody' is rejected \u2014 validation demands the reserved name 'sandbox' or a numeric UID \u2014 but a numeric UID (65534) is accepted and the sandbox runs Ready. Interestingly, commands inside then execute as UID 1000880000, not 65534: on this kubernetes-backed gateway the numeric UID is validated but the platform maps the workload to its own synthetic user namespace identity rather than honoring the raw UID \u2014 exactly the kind of identity-invariant gap #5192's deserialize-time enforcement is about.",
+   "steps": "CreateSandbox with SandboxPolicy.process.run_as_user=nobody; wait Ready; ExecSandbox 'id -un'; compare."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794174836] env round-trip: 'val-3659_14daf169de87'",
+   "steps": "Re-run of generator t_env_injection from battery-variable.py (seed 1794174835)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle4867 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794174867] ready=ready match=True",
+   "steps": "Re-run of generator t_label_selector from battery-variable.py (seed 1794174835)."
+  },
+  {
+   "id": "TV-CONC",
+   "title": "Random-width concurrent exec",
+   "desc": "3 parallel streams with computed outputs",
+   "ok": true,
+   "detail": "[seed 1794174928] width=3 all-correct=True",
+   "steps": "Re-run of generator t_concurrent_exec from battery-variable.py (seed 1794174835)."
+  },
+  {
+   "id": "T4",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "payload 8b93a51e9bdf\u2026 roundtrip=True",
+   "prose": "Wrote this cycle's random SHA-256 payload to /tmp inside the sandbox and read it back from a second exec call \u2014 both reads matched. Filesystem continuity within a sandbox lifetime is the baseline the workspace layer builds on.",
+   "steps": "CreateSandbox; ExecSandbox write payload; ExecSandbox read back; compare."
+  }
+ ]
+}
