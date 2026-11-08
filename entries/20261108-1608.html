@@ -30,6 +30,10 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
 .case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
 .case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .steps{margin:.4rem 0 .6rem;padding:.5rem .8rem;background:#f7f5ef;border-radius:8px}
+.case .steps-title{font-family:-apple-system,sans-serif;font-weight:700;font-size:.78rem;color:#4a5060;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em}
+.case .steps ol{margin-left:1.2rem;font-size:.85rem;color:#333}
+.case .steps li{margin:.2rem 0}
 .case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
 .cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
 .cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
@@ -56,8 +60,10 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 <div class="case">
 <div class="chead"><span class="cid">TV-CMP</span><span class="ctitle">Random compute in exec</span><span class="cmark ok">✓ passed</span></div>
 <p>Sanity check that exec does honest work: I multiplied two random numbers (9996 × 7095) inside the sandbox and the product came back exactly right. Trivial on its face, but it proves commands actually execute and return real output — not canned responses.</p>
-<details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>Generate random a×b</li><li>CreateSandbox, wait Ready</li><li>ExecSandbox: echo $((a*b))</li><li>Verify exact product returned</li></ol></div>
+<p>[seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;</p>
+<div class="kv">technical detail (raw)
 [seed 1794153995] 9996x7095=70921620 got=&#x27;70921620&#x27;
 
 environment & conditions:
@@ -71,8 +77,10 @@ conditions: Model-comparison cycle: seeded-random variable battery (env, labels,
 </div><div class="case">
 <div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
 <p>Filesystem round-trip within a session: wrote a random SHA-256 payload to /tmp and read it back from a separate exec call. It survived, confirming the sandbox filesystem is stable across commands within one sandbox lifetime (though, as battery 3 found, not across stop/start).</p>
-<details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] payload 07d630a0f099… roundtrip ok=True<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>Compute SHA-256 hash of seed</li><li>CreateSandbox, wait Ready</li><li>ExecSandbox: write hash to /tmp/p, read back</li><li>Second ExecSandbox: read /tmp/p again — both reads match</li></ol></div>
+<p>[seed 1794153995] payload 07d630a0f099… roundtrip ok=True</p>
+<div class="kv">technical detail (raw)
 [seed 1794153995] payload 07d630a0f099… roundtrip ok=True
 
 environment & conditions:
@@ -86,8 +94,10 @@ conditions: Model-comparison cycle: seeded-random variable battery (env, labels,
 </div><div class="case">
 <div class="chead"><span class="cid">TV-LAT</span><span class="ctitle">RPC latency snapshot</span><span class="cmark ok">✓ passed</span></div>
 <p>Gateway responsiveness pulse: metadata call at 67ms, list at 85ms. Fast enough that interactive use would feel instantaneous; the numbers become a longitudinal baseline when compared across cycles.</p>
-<details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>Time GetGatewayInfo RPC (3 calls averaged by HTTP round trip)</li><li>Time ListSandboxes RPC</li><li>Record ms values as longitudinal baseline</li></ol></div>
+<p>[seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms</p>
+<div class="kv">technical detail (raw)
 [seed 1794153995] {&quot;GetGatewayInfo&quot;: 67, &quot;ListSandboxes&quot;: 85}ms
 
 environment & conditions:
@@ -101,8 +111,10 @@ conditions: Model-comparison cycle: seeded-random variable battery (env, labels,
 </div><div class="case">
 <div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark ok">✓ passed</span></div>
 <p>The fleet snapshot: 36 gateways, 7 versions in the wild, no drift since the last cycle. This is the journal&#x27;s slow-motion camera — new gateways and version rollouts will show up here as diffs over time.</p>
-<details><summary>Details & environment</summary><div class="cbody">
-[seed 1794153995] 36 gateways, 7 versions, no drift<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>GET /api/hypershell/v1/gateways via owner token</li><li>Count gateways, group by version</li><li>Load previous snapshot from /tmp/ohome/fleet-snapshot.json</li><li>Diff counts/versions; save new snapshot</li></ol></div>
+<p>[seed 1794153995] 36 gateways, 7 versions, no drift</p>
+<div class="kv">technical detail (raw)
 [seed 1794153995] 36 gateways, 7 versions, no drift
 
 environment & conditions:
@@ -116,8 +128,10 @@ conditions: Model-comparison cycle: seeded-random variable battery (env, labels,
 </div><div class="case">
 <div class="chead"><span class="cid">MODEL-SELF</span><span class="ctitle">Model self-report</span><span class="cmark ok">✓ passed</span></div>
 <p>This cycle ran under GLM-5.3 — the same model as the interactive session. Approach: executed the seeded battery mechanically first, then wrote these case notes from the actual outputs rather than from assumptions. I leaned on the large context window to recall prior battery findings (like the FS-persistence caveat) while writing.</p>
-<details><summary>Details & environment</summary><div class="cbody">
-Executed under GLM-5.3 (rits/zai-org/glm-5-3).<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>(meta entry) record which model executed the run and its approach</li></ol></div>
+<p>Executed under GLM-5.3 (rits/zai-org/glm-5-3).</p>
+<div class="kv">technical detail (raw)
 Executed under GLM-5.3 (rits/zai-org/glm-5-3).
 
 environment & conditions:
@@ -129,5 +143,5 @@ transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
 runner model: GLM-5.3 (rits/zai-org/glm-5-3)
 conditions: Model-comparison cycle: seeded-random variable battery (env, labels, policies, concurrency, fleet drift) run under a specific model.</div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:32 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 17:35 UTC</footer>
 </body></html>

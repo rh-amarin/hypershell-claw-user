@@ -30,6 +30,10 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
 .case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
 .case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .steps{margin:.4rem 0 .6rem;padding:.5rem .8rem;background:#f7f5ef;border-radius:8px}
+.case .steps-title{font-family:-apple-system,sans-serif;font-weight:700;font-size:.78rem;color:#4a5060;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em}
+.case .steps ol{margin-left:1.2rem;font-size:.85rem;color:#333}
+.case .steps li{margin:.2rem 0}
 .case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
 .cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
 .cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
@@ -56,8 +60,10 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 <div class="case">
 <div class="chead"><span class="cid">V1</span><span class="ctitle">Filesystem persists across stop/start</span><span class="cmark bad">✗ failed/finding</span></div>
 <p>Write file, stop, start, read back</p>
-<details><summary>Details & environment</summary><div class="cbody">
-write=&#x27;marker&#x27; readback=&#x27;GONE&#x27; — FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); persistence requires the OpenShell workspace layer, not the container FS<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox, wait Ready</li><li>ExecSandbox: echo marker &gt; /tmp/persist-test &amp;&amp; cat</li><li>StopSandbox, wait, StartSandbox, wait Ready</li><li>ExecSandbox: cat /tmp/persist-test — result: GONE (container FS ephemeral)</li></ol></div>
+<p>write=&#x27;marker&#x27; readback=&#x27;GONE&#x27; — FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); persistence requires the OpenShell workspace layer, not the container FS</p>
+<div class="kv">technical detail (raw)
 write=&#x27;marker&#x27; readback=&#x27;GONE&#x27; — FINDING: kubernetes-driver sandboxes do NOT persist /tmp across stop/start (fresh container on restart); persistence requires the OpenShell workspace layer, not the container FS
 
 environment & conditions:
@@ -70,8 +76,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V2</span><span class="ctitle">Suspend / Resume lifecycle</span><span class="cmark bad">✗ failed/finding</span></div>
 <p>Suspend, verify state, resume, wait ready</p>
-<details><summary>Details & environment</summary><div class="cbody">
-suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready — FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver (VM-style checkpoint/restore not supported on this backend)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox, wait Ready</li><li>SuspendSandbox RPC</li><li>GetSandbox state check</li><li>ResumeSandbox RPC — both return UNIMPLEMENTED(9) on kubernetes driver</li></ol></div>
+<p>suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready — FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver (VM-style checkpoint/restore not supported on this backend)</p>
+<div class="kv">technical detail (raw)
 suspend grpc=9 state-suspended=False resume grpc=9 ready-again=ready — FINDING: Suspend/Resume returns UNIMPLEMENTED(9) on kubernetes driver (VM-style checkpoint/restore not supported on this backend)
 
 environment & conditions:
@@ -84,8 +92,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V3</span><span class="ctitle">SSH session creation</span><span class="cmark ok">✓ passed</span></div>
 <p>CreateSshSession on ready sandbox</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=0 body=166B (); response contains proxy/ssh material: True<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox, wait Ready</li><li>CreateSshSession RPC (sandbox, workspace)</li><li>Decode proxy-command material from response</li></ol></div>
+<p>grpc=0 body=166B (); response contains proxy/ssh material: True</p>
+<div class="kv">technical detail (raw)
 grpc=0 body=166B (); response contains proxy/ssh material: True
 
 environment & conditions:
@@ -98,8 +108,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V4</span><span class="ctitle">API-server fleet surface</span><span class="cmark ok">✓ passed</span></div>
 <p>List gateways, clusters, roles via api-server with refreshed token</p>
-<details><summary>Details & environment</summary><div class="cbody">
-gateways=36 clusters=4 roles-list-ok=True<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>GET /api/hypershell/v1/gateways with owner platform:admin bearer token</li><li>GET /managed_clusters</li><li>GET /roles</li><li>Count and record results</li></ol></div>
+<p>gateways=36 clusters=4 roles-list-ok=True</p>
+<div class="kv">technical detail (raw)
 gateways=36 clusters=4 roles-list-ok=True
 
 environment & conditions:
@@ -112,8 +124,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V5</span><span class="ctitle">Fleet version distribution</span><span class="cmark ok">✓ passed</span></div>
 <p>Group 36 gateways by version</p>
-<details><summary>Details & environment</summary><div class="cbody">
-{&quot;0.1.6-rhaiv.4&quot;: 7, &quot;0.1.6-rhaiv.2&quot;: 7, &quot;0.1.5-rhaiv.3&quot;: 8, &quot;0.1.5-rhaiv.0&quot;: 4, &quot;0.1.3-rhaiv.3&quot;: 3, &quot;0.1.2-rhaiv.7&quot;: 3, &quot;0.1.2-rhaiv.0&quot;: 4}<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>Group 36 gateway records by gateway_version</li><li>Record version distribution</li></ol></div>
+<p>{&quot;0.1.6-rhaiv.4&quot;: 7, &quot;0.1.6-rhaiv.2&quot;: 7, &quot;0.1.5-rhaiv.3&quot;: 8, &quot;0.1.5-rhaiv.0&quot;: 4, &quot;0.1.3-rhaiv.3&quot;: 3, &quot;0.1.2-rhaiv.7&quot;: 3, &quot;0.1.2-rhaiv.0&quot;: 4}</p>
+<div class="kv">technical detail (raw)
 {&quot;0.1.6-rhaiv.4&quot;: 7, &quot;0.1.6-rhaiv.2&quot;: 7, &quot;0.1.5-rhaiv.3&quot;: 8, &quot;0.1.5-rhaiv.0&quot;: 4, &quot;0.1.3-rhaiv.3&quot;: 3, &quot;0.1.2-rhaiv.7&quot;: 3, &quot;0.1.2-rhaiv.0&quot;: 4}
 
 environment & conditions:
@@ -126,8 +140,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V6</span><span class="ctitle">Fleet sandbox load</span><span class="cmark ok">✓ passed</span></div>
 <p>Sum active sandbox counts</p>
-<details><summary>Details & environment</summary><div class="cbody">
-total active sandboxes=34, max on one gw=11, avg=0.9<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>Sum active_sandbox_count across all gateways</li><li>Compute max and average load</li></ol></div>
+<p>total active sandboxes=34, max on one gw=11, avg=0.9</p>
+<div class="kv">technical detail (raw)
 total active sandboxes=34, max on one gw=11, avg=0.9
 
 environment & conditions:
@@ -140,8 +156,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V7</span><span class="ctitle">Label round-trip with policy</span><span class="cmark bad">✗ failed/finding</span></div>
 <p>Labeled sandbox w/ api.hyp2 policy; selector battery=three</p>
-<details><summary>Details & environment</summary><div class="cbody">
-ready=timeout selector-match=False — root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready before token death — retry needed<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox with policy allowing api.hyp2.infra.hypershell.app for curl, labels battery=three/owner=lemon</li><li>ListSandboxes with selector battery=three (blocked by SA token expiry)</li></ol></div>
+<p>ready=timeout selector-match=False — root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready before token death — retry needed</p>
+<div class="kv">technical detail (raw)
 ready=timeout selector-match=False — root cause: SA token expired mid-battery (5-min lifetime); sandbox created but never reached ready before token death — retry needed
 
 environment & conditions:
@@ -154,8 +172,10 @@ conditions: SA token expired mid-battery (documented as finding)</div></div></de
 </div><div class="case">
 <div class="chead"><span class="cid">V8</span><span class="ctitle">NOT_FOUND on absent sandbox</span><span class="cmark bad">✗ failed/finding</span></div>
 <p>GetSandbox for nonexistent name</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=16 (invalid token: ExpiredSignature) — root cause: SA token expired (ExpiredSignature) — gRPC path needs per-battery token refresh like battery2 had<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>GetSandbox for nonexistent name lemon-never-existed</li><li>Record grpc-status (16 ExpiredSignature — SA token had expired)</li></ol></div>
+<p>grpc=16 (invalid token: ExpiredSignature) — root cause: SA token expired (ExpiredSignature) — gRPC path needs per-battery token refresh like battery2 had</p>
+<div class="kv">technical detail (raw)
 grpc=16 (invalid token: ExpiredSignature) — root cause: SA token expired (ExpiredSignature) — gRPC path needs per-battery token refresh like battery2 had
 
 environment & conditions:
@@ -166,5 +186,5 @@ credentials: SA for gateway RPCs; owner platform:admin token for api-server read
 transport: gRPC-web + REST (api-server)
 conditions: SA token expired mid-battery (documented as finding)</div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:32 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 17:35 UTC</footer>
 </body></html>

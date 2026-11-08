@@ -30,6 +30,10 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
 .case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
 .case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .steps{margin:.4rem 0 .6rem;padding:.5rem .8rem;background:#f7f5ef;border-radius:8px}
+.case .steps-title{font-family:-apple-system,sans-serif;font-weight:700;font-size:.78rem;color:#4a5060;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em}
+.case .steps ol{margin-left:1.2rem;font-size:.85rem;color:#333}
+.case .steps li{margin:.2rem 0}
 .case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
 .cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
 .cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
@@ -56,8 +60,10 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 <div class="case">
 <div class="chead"><span class="cid">U1a</span><span class="ctitle">Template: create lemon-template-1</span><span class="cmark ok">✓ passed</span></div>
 <p>SandboxWorkloadTemplate with ubuntu image + env</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandboxTemplate RPC: SandboxWorkloadTemplate{metadata.name=lemon-template-1, spec.workload{image, env FROM_TEMPLATE=yes}}</li><li>Verify grpc OK</li></ol></div>
+<p>grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)</p>
+<div class="kv">technical detail (raw)
 grpc=0 (created in first partial run; rerun correctly hit ALREADY_EXISTS=6)
 
 environment & conditions:
@@ -70,8 +76,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U2a</span><span class="ctitle">Service: web sandbox ready</span><span class="cmark ok">✓ passed</span></div>
 <p>Bash /dev/tcp HTTP responder sandbox</p>
-<details><summary>Details & environment</summary><div class="cbody">
-state=ready<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox running bash /dev/tcp HTTP responder loop on 127.0.0.1:8899</li><li>Wait for Ready</li></ol></div>
+<p>state=ready</p>
+<div class="kv">technical detail (raw)
 state=ready
 
 environment & conditions:
@@ -84,8 +92,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U2b</span><span class="ctitle">Service: ExposeService 8899</span><span class="cmark ok">✓ passed</span></div>
 <p>Expose lemon-http on target_port 8899 with domain=true</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=0 url_returned=True <div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>ExposeService RPC: name=lemon-http, target_port=8899, domain=true</li><li>Check URL in response</li></ol></div>
+<p>grpc=0 url_returned=True </p>
+<div class="kv">technical detail (raw)
 grpc=0 url_returned=True 
 
 environment & conditions:
@@ -98,8 +108,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U2c</span><span class="ctitle">Service: fetch exposed URL</span><span class="cmark bad">✗ failed/finding</span></div>
 <p>GET https://default--lemon-web--lemon-http.openshell.localhost:8...</p>
-<details><summary>Details & environment</summary><div class="cbody">
-HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>GET the exposed service URL via curl</li><li>Record HTTP status (unreachable from sandbox egress — network boundary)</li></ol></div>
+<p>HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)</p>
+<div class="kv">technical detail (raw)
 HTTP 000 — URL only reachable from inside gateway network boundary (expected for k8s-internal service URL)
 
 environment & conditions:
@@ -112,8 +124,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U2d</span><span class="ctitle">Service: listed</span><span class="cmark ok">✓ passed</span></div>
 <p>ListServices filtered by sandbox</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=0 256B <div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>ListServices RPC filtered by sandbox name</li><li>Verify service listing</li></ol></div>
+<p>grpc=0 256B </p>
+<div class="kv">technical detail (raw)
 grpc=0 256B 
 
 environment & conditions:
@@ -126,8 +140,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U3</span><span class="ctitle">Labels: selector filtering</span><span class="cmark ok">✓ passed</span></div>
 <p>List with label_selector team=lemon</p>
-<details><summary>Details & environment</summary><div class="cbody">
-a=True b=True grpc=0<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox ×2 with labels team=lemon (env=a / env=b)</li><li>ListSandboxes with label_selector=team=lemon</li><li>Verify both match</li></ol></div>
+<p>a=True b=True grpc=0</p>
+<div class="kv">technical detail (raw)
 a=True b=True grpc=0
 
 environment & conditions:
@@ -140,8 +156,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U3b</span><span class="ctitle">Labels: empty selector result</span><span class="cmark ok">✓ passed</span></div>
 <p>List with team=nobody matches nothing</p>
-<details><summary>Details & environment</summary><div class="cbody">
-clean=True<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>ListSandboxes with label_selector=team=nobody</li><li>Verify zero matches</li></ol></div>
+<p>clean=True</p>
+<div class="kv">technical detail (raw)
 clean=True
 
 environment & conditions:
@@ -154,8 +172,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U4</span><span class="ctitle">Exec: 4 concurrent streams</span><span class="cmark ok">✓ passed</span></div>
 <p>Parallel ExecSandbox on one sandbox</p>
-<details><summary>Details & environment</summary><div class="cbody">
-all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox (sleep 600)</li><li>4 parallel ExecSandbox calls, each echoing a unique computed value</li><li>Verify all 4 streams return their own values (per-thread rpc temp files)</li></ol></div>
+<p>all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)</p>
+<div class="kv">technical detail (raw)
 all 4 streams: concurrent-0..3 / done-0..3 (initial fail was test-harness temp-file race, not platform)
 
 environment & conditions:
@@ -168,8 +188,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U5</span><span class="ctitle">FS stress: 200 files</span><span class="cmark ok">✓ passed</span></div>
 <p>Create 200 files, count, du</p>
-<details><summary>Details & environment</summary><div class="cbody">
-200 | 812K<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox</li><li>ExecSandbox: loop creating 200 files with content in /tmp/stress</li><li>ls | wc -l and du -sh verification</li></ol></div>
+<p>200 | 812K</p>
+<div class="kv">technical detail (raw)
 200 | 812K
 
 environment & conditions:
@@ -182,8 +204,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U6</span><span class="ctitle">Update stopped sandbox (no-op)</span><span class="cmark bad">✗ failed/finding</span></div>
 <p>UpdateSandbox with no fields = resume pending op</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox, wait Ready, StopSandbox</li><li>UpdateSandbox RPC with no selected fields</li><li>Record grpc-status (12 UNIMPLEMENTED on gRPC-web path)</li></ol></div>
+<p>grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)</p>
+<div class="kv">technical detail (raw)
 grpc=12  (UNIMPLEMENTED for HTTP/gRPC-web path — update requires the openshell CLI transport, a real-user finding)
 
 environment & conditions:
@@ -196,8 +220,10 @@ conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div><div class="case">
 <div class="chead"><span class="cid">U6b</span><span class="ctitle">Restart after update attempt</span><span class="cmark ok">✓ passed</span></div>
 <p>StartSandbox then wait ready</p>
-<details><summary>Details & environment</summary><div class="cbody">
-start grpc=0 state=ready<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>StartSandbox after failed update</li><li>Poll GetSandbox until Ready</li></ol></div>
+<p>start grpc=0 state=ready</p>
+<div class="kv">technical detail (raw)
 start grpc=0 state=ready
 
 environment & conditions:
@@ -208,5 +234,5 @@ credentials: same SA; per-call token refresh
 transport: gRPC-web; schemas verified against proto before encoding
 conditions: After overnight broker recovery (16h wedge)</div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:32 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 17:35 UTC</footer>
 </body></html>

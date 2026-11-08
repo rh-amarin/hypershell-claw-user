@@ -30,6 +30,10 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
 .case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
 .case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .steps{margin:.4rem 0 .6rem;padding:.5rem .8rem;background:#f7f5ef;border-radius:8px}
+.case .steps-title{font-family:-apple-system,sans-serif;font-weight:700;font-size:.78rem;color:#4a5060;margin-bottom:.3rem;text-transform:uppercase;letter-spacing:.05em}
+.case .steps ol{margin-left:1.2rem;font-size:.85rem;color:#333}
+.case .steps li{margin:.2rem 0}
 .case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
 .cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
 .cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
@@ -56,8 +60,10 @@ footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a
 <div class="case">
 <div class="chead"><span class="cid">T1</span><span class="ctitle">ListSandboxes pagination</span><span class="cmark ok">✓ passed</span></div>
 <p>List with page_size=100 on default workspace</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc-status=0, ~0 sandbox entries, 5B response<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>ListSandboxes RPC with page_size=100, workspace_scope=default (gRPC-web POST /openshell.v1.OpenShell/ListSandboxes)</li><li>Decode response; count sandbox entries</li></ol></div>
+<p>grpc-status=0, ~0 sandbox entries, 5B response</p>
+<div class="kv">technical detail (raw)
 grpc-status=0, ~0 sandbox entries, 5B response
 
 environment & conditions:
@@ -70,8 +76,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T2</span><span class="ctitle">TTY sandbox with custom command</span><span class="cmark ok">✓ passed</span></div>
 <p>Create with tty=true, command sleep 600, label test=tty-config</p>
-<details><summary>Details & environment</summary><div class="cbody">
-create grpc=0, state=ready in 29s<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox RPC: image nvcr.io/nvidia/base/ubuntu:24.04, command [/bin/sleep 600], tty=true, label test=tty-config</li><li>Poll GetSandbox until conditions show Ready=True (29s)</li><li>Verify sandbox metadata (uuid, labels, command)</li></ol></div>
+<p>create grpc=0, state=ready in 29s</p>
+<div class="kv">technical detail (raw)
 create grpc=0, state=ready in 29s
 
 environment & conditions:
@@ -84,8 +92,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T3</span><span class="ctitle">No-policy sandbox (deny-all)</span><span class="cmark ok">✓ passed</span></div>
 <p>Create with NO network policies; expect all egress denied</p>
-<details><summary>Details & environment</summary><div class="cbody">
-state=ready, egress probe: CONNECT-FAIL<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox RPC with NO networkPolicies in spec</li><li>Wait for Ready</li><li>ExecSandbox: bash /dev/tcp probe to github.com:443</li><li>Confirm connect refused (default-deny)</li></ol></div>
+<p>state=ready, egress probe: CONNECT-FAIL</p>
+<div class="kv">technical detail (raw)
 state=ready, egress probe: CONNECT-FAIL
 
 environment & conditions:
@@ -98,8 +108,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T4</span><span class="ctitle">Multi-rule networkPolicies + env injection</span><span class="cmark ok">✓ passed</span></div>
 <p>Two rules (web, pkg) + env FOO=bar42; verify env in exec</p>
-<details><summary>Details & environment</summary><div class="cbody">
-state=ready, exec: &#x27;FOO=bar42 TEST_MODE=multi&#x27;<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox with 2 networkPolicies rules (web: example.com+api.example.com for curl; pkg: registry.npmjs.org for node+curl) and env FOO=bar42</li><li>Wait for Ready</li><li>ExecSandbox: echo $FOO $TEST_MODE</li><li>Verify env values match spec</li></ol></div>
+<p>state=ready, exec: &#x27;FOO=bar42 TEST_MODE=multi&#x27;</p>
+<div class="kv">technical detail (raw)
 state=ready, exec: &#x27;FOO=bar42 TEST_MODE=multi&#x27;
 
 environment & conditions:
@@ -112,8 +124,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T5</span><span class="ctitle">Stop/Start lifecycle</span><span class="cmark ok">✓ passed</span></div>
 <p>StopSandbox then StartSandbox on lemon-multi-policy</p>
-<details><summary>Details & environment</summary><div class="cbody">
-stop=True (state-check=stopped), start=True, ready-again=ready<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>StopSandbox RPC on ready sandbox</li><li>GetSandbox: verify stopped state</li><li>StartSandbox RPC</li><li>Poll GetSandbox until Ready again</li></ol></div>
+<p>stop=True (state-check=stopped), start=True, ready-again=ready</p>
+<div class="kv">technical detail (raw)
 stop=True (state-check=stopped), start=True, ready-again=ready
 
 environment & conditions:
@@ -126,8 +140,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T6</span><span class="ctitle">Duplicate name rejected</span><span class="cmark ok">✓ passed</span></div>
 <p>Create second sandbox named lemon-tty-test</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc-status=6 (sandbox &#x27;lemon-tty-test&#x27; already exists)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox reusing an existing name (lemon-tty-test)</li><li>Expect and verify grpc-status=6 ALREADY_EXISTS</li></ol></div>
+<p>grpc-status=6 (sandbox &#x27;lemon-tty-test&#x27; already exists)</p>
+<div class="kv">technical detail (raw)
 grpc-status=6 (sandbox &#x27;lemon-tty-test&#x27; already exists)
 
 environment & conditions:
@@ -140,8 +156,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T7</span><span class="ctitle">Invalid image handling</span><span class="cmark ok">✓ passed</span></div>
 <p>Create with nonexistent image does-not-exist-xyz:9.9.9</p>
-<details><summary>Details & environment</summary><div class="cbody">
-behavior: created — gateway accepted and will surface runtime error<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox with nonexistent image does-not-exist-xyz:9.9.9</li><li>Record whether rejection happens at admission or at runtime</li></ol></div>
+<p>behavior: created — gateway accepted and will surface runtime error</p>
+<div class="kv">technical detail (raw)
 behavior: created — gateway accepted and will surface runtime error
 
 environment & conditions:
@@ -154,8 +172,10 @@ conditions: First battery after egress approvals; spawn-broker had wedged twice 
 </div><div class="case">
 <div class="chead"><span class="cid">T8</span><span class="ctitle">Exec execution_timeout enforced</span><span class="cmark ok">✓ passed</span></div>
 <p>ExecSandbox sleep 30 with 3s execution_timeout</p>
-<details><summary>Details & environment</summary><div class="cbody">
-grpc=0 after 3.1s (expect ~3s, not 30s)<div class="kv">technical detail (raw)
+<details><summary>Steps, details & environment</summary><div class="cbody">
+<div class="steps"><div class="steps-title">Operations performed</div><ol><li>CreateSandbox (sleep workload)</li><li>ExecSandbox: sleep 30 with execution_timeout=3s (Duration field 105)</li><li>Measure wall time; verify return at ~3.1s not 30s</li></ol></div>
+<p>grpc=0 after 3.1s (expect ~3s, not 30s)</p>
+<div class="kv">technical detail (raw)
 grpc=0 after 3.1s (expect ~3s, not 30s)
 
 environment & conditions:
@@ -166,5 +186,5 @@ credentials: OpenShellGatewayServiceAccount (client-credentials, 5-min JWT, gate
 transport: gRPC-web over HTTPS (hand-encoded protobuf, curl)
 conditions: First battery after egress approvals; spawn-broker had wedged twice that day</div></div></details>
 </div></article>
-<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:32 UTC</footer>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 17:35 UTC</footer>
 </body></html>
