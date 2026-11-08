@@ -1,5 +1,12 @@
 [
  {
+  "file": "data/battery-1.json",
+  "run": "battery-1",
+  "timestamp": "2026-11-06T12:19:00Z",
+  "title": "First contact: sandbox lifecycle, network policies, and failure modes",
+  "model": ""
+ },
+ {
   "file": "data/battery-2.json",
   "run": "battery-2",
   "timestamp": "2026-11-07T09:55:00Z",
@@ -11,6 +18,13 @@
   "run": "battery-3",
   "timestamp": "2026-11-08T14:15:00Z",
   "title": "The edge cases: ephemeral FS across restarts, unsupported suspend, fleet stats",
+  "model": ""
+ },
+ {
+  "file": "data/battery-V-1794149471.json",
+  "run": "battery-V-1794149471",
+  "timestamp": "2026-11-08T14:51:11Z",
+  "title": "First variable cycle: seeded-random configs across the test pool",
   "model": ""
  },
  {
@@ -28,17 +42,10 @@
   "model": "gpt-6.1-sol"
  },
  {
-  "file": "data/battery-V-1794149471.json",
-  "run": "battery-V-1794149471",
-  "timestamp": "2026-11-08T14:51:11Z",
-  "title": "battery-V-1794149471",
-  "model": ""
- },
- {
-  "file": "data/battery-1.json",
-  "run": "battery-1",
-  "timestamp": "2026-11-06T12:19:00Z",
-  "title": "First contact: sandbox lifecycle, network policies, and failure modes",
+  "file": "data/battery-V-1794161536.json",
+  "run": "battery-V-1794161536",
+  "timestamp": "2026-11-08T18:14:00Z",
+  "title": "Upstream fixes visible: policy-anchor validation and trace forwarding, plus regression set",
   "model": ""
  }
 ]

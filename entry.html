@@ -46,6 +46,8 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .cat p{font-size:.85rem;color:#4a5060;margin:.25rem 0}
 .cat .hist{font-size:.72rem;color:#8a90a2;font-family:ui-monospace,monospace}
 .cat .h-ok{color:#1a8f4a}.cat .h-bad{color:#c62828}
+.cat .h-link{text-decoration:none;border-bottom:1px dotted}
+.cat .h-link:hover{border-bottom-style:solid}
 footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a90a2;font-size:.78rem;font-family:-apple-system,sans-serif}
 .env{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
 </style></head><body>
@@ -82,9 +84,7 @@ async function loadAll() {
       runs.push({...data, passed, total: data.results.length});
     } catch (e) { console.warn('skip', m.file, e); }
   }
-  // sort by timestamp, newest first
-  runs.sort((a, b) => (b.meta.timestamp || '').localeCompare(a.meta.timestamp || ''));
-  return runs;
+  return runs;  // manifest order = oldest first
 }
 
 function runIntro(run) {
@@ -146,7 +146,7 @@ async function renderIndex() {
   $('#status').textContent = `${runs.length} entries, ${runs.reduce((a,r)=>a+r.passed,0)}/${runs.reduce((a,r)=>a+r.total,0)} cases passed`;
   const catalog = {};
   runs.forEach(r => r.results.forEach(t => { (catalog[t.id] = catalog[t.id] || {hist:[]}).hist.push({run:r.meta.run, ok:t.ok}); }));
-  const links = runs.map(run => {
+  const links = runs.slice().reverse().map(run => {
     const cls = run.passed === run.total ? 'ok' : (run.passed === 0 ? 'bad' : 'mixed');
     const mt = run.meta.model ? ` · ${run.meta.model}` : '';
     return `<a class="entrylink" href="entry.html?run=${encodeURIComponent(run.meta.run)}"><span class="escore ${cls}">${run.passed}/${run.total}</span><div class="etitle">${esc(displayTitle(run))}</div><div class="emeta">${esc(run.meta.run)} · ${esc(run.meta.timestamp)}${esc(mt)}</div></a>`;
@@ -185,7 +185,7 @@ async function renderCatalog() {
   const cats = Object.values(catalog).sort((a,b) => a.id.localeCompare(b.id)).map(c => {
     const p = c.hist.filter(h => h.ok).length, n = c.hist.length;
     const cls = p === n ? 'ok' : (p === 0 ? 'bad' : 'mixed');
-    const hist = c.hist.map(h => `<span class="${h.ok?'h-ok':'h-bad'}">${esc(h.run)}:${h.ok?'✓':'✗'}</span>`).join(' · ');
+    const hist = c.hist.map(h => `<a class="h-link ${h.ok?'h-ok':'h-bad'}" href="entry.html?run=${encodeURIComponent(h.run)}">${esc(h.run)}:${h.ok?'✓':'✗'}</a>`).join(' · ');
     return `<div class="cat"><div class="chead"><span class="cat-id">${esc(c.id)}</span><span class="cat-title">${esc(c.title)}</span><span class="cat-pass ${cls}">${p}/${n}</span></div><p>${esc(c.desc)}</p><div class="hist">${hist}</div></div>`;
   }).join('');
   $('#content').innerHTML = `<section style="font-family:-apple-system,sans-serif"><p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">Every distinct case ever executed, with all-time pass rate and per-run history — rebuilt from run data each time you open this page.</p></section>${cats}`;
