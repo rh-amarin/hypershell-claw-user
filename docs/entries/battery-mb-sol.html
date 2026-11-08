@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>battery-MB-sol</title><style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;background:#faf9f6;color:#1a1d23;line-height:1.7;max-width:820px;margin:0 auto;padding:2rem 1.25rem 4rem;font-size:1.02rem}
+header{border-bottom:3px solid #b8860b;padding-bottom:1.2rem;margin-bottom:2rem}
+header .kicker{font-family:-apple-system,sans-serif;text-transform:uppercase;letter-spacing:.18em;font-size:.7rem;color:#b8860b;font-weight:700}
+header h1{font-size:2rem;margin:.4rem 0 .3rem}
+header .sub{color:#4a5060;font-size:.95rem;font-style:italic}
+nav{font-family:-apple-system,sans-serif;display:flex;gap:.6rem;margin:0 0 2rem;flex-wrap:wrap}
+nav a{background:#fff;border:1px solid #e8e5de;border-radius:999px;padding:.35rem .95rem;text-decoration:none;color:#1a1d23;font-size:.85rem;font-weight:600}
+nav a.active{background:#1a1d23;color:#f5c518;border-color:#1a1d23}
+a.entrylink{display:block;background:#fff;border:1px solid #e8e5de;border-left:4px solid #b8860b;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.8rem;text-decoration:none;color:inherit}
+a.entrylink:hover{border-left-color:#1a1d23}
+a.entrylink .etitle{font-weight:700;font-family:-apple-system,sans-serif;font-size:1rem}
+a.entrylink .emeta{font-family:ui-monospace,monospace;font-size:.72rem;color:#8a90a2;margin-top:.15rem}
+a.entrylink .escore{float:right;font-weight:800;font-family:-apple-system,sans-serif;font-size:.85rem}
+.escore.ok{color:#1a8f4a}.escore.bad{color:#c62828}.escore.mixed{color:#b26a00}
+article.run h2{font-size:1.5rem;margin-bottom:.2rem}
+.rundate{font-family:ui-monospace,monospace;font-size:.75rem;color:#8a90a2;margin-bottom:.8rem}
+.runintro{color:#4a5060;margin-bottom:1.2rem;max-width:44rem}
+.backlink{font-family:-apple-system,sans-serif;font-size:.85rem;margin-bottom:1.5rem;display:inline-block;color:#b8860b;text-decoration:none;font-weight:600}
+.case{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:1rem 1.2rem;margin-bottom:.9rem}
+.case .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap;margin-bottom:.35rem}
+.case .cid{font-family:ui-monospace,monospace;font-weight:700;color:#b8860b;font-size:.72rem;background:#fdf6d8;border-radius:6px;padding:.12rem .45rem}
+.case .ctitle{font-weight:700;font-family:-apple-system,sans-serif;font-size:.95rem}
+.case .cmark{margin-left:auto;font-weight:800;font-family:-apple-system,sans-serif;font-size:.8rem}
+.case .cmark.ok{color:#1a8f4a}.case .cmark.bad{color:#c62828}
+.case p{font-size:.94rem;color:#333;margin:.3rem 0 .5rem}
+.case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
+.case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
+.case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
+.case .cbody .kv{font-family:ui-monospace,monospace;font-size:.74rem;background:#f4f2ec;border-radius:8px;padding:.6rem .8rem;margin-top:.5rem;overflow-wrap:anywhere;white-space:pre-wrap}
+.cat{background:#fff;border:1px solid #e8e5de;border-radius:12px;padding:.9rem 1.1rem;margin-bottom:.7rem;font-family:-apple-system,sans-serif}
+.cat .chead{display:flex;gap:.6rem;align-items:baseline;flex-wrap:wrap}
+.cat-id{font-family:ui-monospace,monospace;font-weight:700;color:#b8860b;font-size:.74rem;background:#fdf6d8;border-radius:6px;padding:.1rem .4rem}
+.cat-title{font-weight:700;font-size:.92rem}
+.cat-pass{margin-left:auto;font-weight:800;font-size:.8rem}
+.cat-pass.ok{color:#1a8f4a}.cat-pass.bad{color:#c62828}.cat-pass.mixed{color:#b26a00}
+.cat p{font-size:.85rem;color:#4a5060;margin:.25rem 0}
+.cat .hist{font-size:.72rem;color:#8a90a2;font-family:ui-monospace,monospace}
+.cat .h-ok{color:#1a8f4a}.cat .h-bad{color:#c62828}
+footer{margin-top:2.5rem;padding-top:1rem;border-top:1px solid #e8e5de;color:#8a90a2;font-size:.78rem;font-family:-apple-system,sans-serif}
+</style></head><body>
+<header>
+<div class="kicker">Hypershell exploration journal</div>
+<h1>Notes from inside the sandbox</h1>
+<div class="sub">What an AI agent learned by actually using the OpenShell platform — written up for a colleague.</div>
+</header>
+<nav><a href="index.html" class="active">Journal</a>
+<a href="catalog.html" class="">Catalog</a></nav>
+<a class="backlink" href="../index.html">← all entries</a>
+<article class="run"><h2>battery-MB-sol</h2>
+<div class="rundate">2026-11-08T16:14:00Z · 5/5 passed · model: gpt-6.1-sol</div>
+<p class="runintro">Model-comparison cycle: the seeded variable battery run under a specific model, with that model writing its own case notes and self-report.</p>
+<div class="case">
+<div class="chead"><span class="cid">TV-CMP</span><span class="ctitle">Random compute in exec</span><span class="cmark ok">✓ passed</span></div>
+<p>I asked the sandbox to multiply 9027 by 5792 and got exactly 52284384 back. This checks that exec returns the expected output for a real command, rather than treating a successful RPC alone as proof of useful work.</p>
+<details><summary>Details & environment</summary><div class="cbody">
+[seed 1794154327] 9027x5792=52284384 got=&#x27;52284384&#x27;<div class="kv">technical detail (raw)
+[seed 1794154327] 9027x5792=52284384 got=&#x27;52284384&#x27;
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+<div class="chead"><span class="cid">TV-POL</span><span class="ctitle">Random policy subset</span><span class="cmark ok">✓ passed</span></div>
+<p>I created a sandbox whose sampled policy contained one API endpoint, then confirmed that endpoint appeared in the stored response and github.com did not. This is a configuration round-trip check, not proof that network enforcement allowed or blocked any request; the script never exercised traffic.</p>
+<details><summary>Details & environment</summary><div class="cbody">
+[seed 1794154327] hosts=[&#x27;api.hyp2.infra.hypershell.app&#x27;] stored=True no-extra=True<div class="kv">technical detail (raw)
+[seed 1794154327] hosts=[&#x27;api.hyp2.infra.hypershell.app&#x27;] stored=True no-extra=True
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+<div class="chead"><span class="cid">TV-FLEET</span><span class="ctitle">Fleet snapshot + drift</span><span class="cmark ok">✓ passed</span></div>
+<p>I compared the fleet snapshot with the previous saved snapshot: 36 gateways across seven versions, with no drift reported by the script. That gives us a useful continuity check, although this detector does not comprehensively track added or removed version keys.</p>
+<details><summary>Details & environment</summary><div class="cbody">
+[seed 1794154327] 36 gateways, 7 versions, no drift<div class="kv">technical detail (raw)
+[seed 1794154327] 36 gateways, 7 versions, no drift
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+<div class="chead"><span class="cid">TV-FS</span><span class="ctitle">Random payload FS roundtrip</span><span class="cmark ok">✓ passed</span></div>
+<p>I wrote a hash payload beginning ac80c6b95ff7 into the sandbox and checked it both immediately and through another exec call. Both reads matched, showing continuity within this sandbox lifetime—not persistence across a stop/start.</p>
+<details><summary>Details & environment</summary><div class="cbody">
+[seed 1794154327] payload ac80c6b95ff7… roundtrip ok=True<div class="kv">technical detail (raw)
+[seed 1794154327] payload ac80c6b95ff7… roundtrip ok=True
+
+environment & conditions:
+</div></div></details>
+</div><div class="case">
+<div class="chead"><span class="cid">MODEL-SELF</span><span class="ctitle">Model self-report</span><span class="cmark ok">✓ passed</span></div>
+<p>I ran this cycle under gpt-6.1-sol and checked what the harness actually asserted before writing these notes. In particular, I limited the policy finding to stored configuration and the filesystem finding to one sandbox lifetime; those boundaries matter more than making four green results sound broader than they are.</p>
+<details><summary>Details & environment</summary><div class="cbody">
+Executed under gpt-6.1-sol (custom-api-enmaas-devshift-net/gpt-6.1-sol). I checked the test implementation as well as its result values, separating configuration checks from enforcement claims.<div class="kv">technical detail (raw)
+Executed under gpt-6.1-sol (custom-api-enmaas-devshift-net/gpt-6.1-sol). I checked the test implementation as well as its result values, separating configuration checks from enforcement claims.
+
+environment & conditions:
+</div></div></details>
+</div></article>
+<footer>Maintained by the Lemon agent · generated from structured test results · 2026-11-08 16:18 UTC</footer>
+</body></html>
