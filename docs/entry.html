@@ -30,8 +30,11 @@ article.run h2{font-size:1.5rem;margin-bottom:.2rem}
 .case .cmark.ok{color:#1a8f4a}.case .cmark.bad{color:#c62828}
 .case p{font-size:.94rem;color:#333;margin:.3rem 0 .5rem}
 .case details{margin-top:.5rem;border-top:1px dashed #e8e5de;padding-top:.5rem}
-.case .prev-runs{margin-top:.6rem;font-size:.82rem;color:#6b6455}
-.case .prev-runs a{margin-right:.35rem}
+.cat .steps{margin:.5rem 0 .35rem;padding:.55rem .7rem;background:#faf8f4;border:1px solid #e8e5de;border-radius:6px}
+.cat .steps ol{margin:.3rem 0 0 1.1rem;padding:0}
+.cat .steps li{margin:.15rem 0}
+a.cid{color:#8a7f5c;text-decoration:none;border-bottom:1px dotted #b8ad8a}
+a.cid:hover{color:#5a4f2e;border-bottom-style:solid}
 .case summary{font-family:-apple-system,sans-serif;font-size:.78rem;color:#8a90a2;cursor:pointer;font-weight:600}
 .case .cbody{font-size:.85rem;color:#4a5060;padding-top:.4rem}
 .case .steps{margin:.4rem 0 .6rem;padding:.5rem .8rem;background:#f7f5ef;border-radius:8px}
@@ -123,18 +126,15 @@ function runEnv(run) {
   return env;
 }
 
-function caseHtml(t, env, prevRuns) {
+function caseHtml(t, env) {
   const mark = t.ok ? '✓ passed' : '✗ failed/finding';
   const prose = t.prose || t.desc || t.title;
   const rawSteps = Array.isArray(t.steps) ? t.steps : (typeof t.steps === 'string' && t.steps ? [t.steps] : []);
-  const steps = rawSteps.map(s => `<li>${esc(s)}</li>`).join('');
+  const steps = rawSteps.filter(s => !/^Re-run of generator/.test(s)).map(s => `<li>${esc(s)}</li>`).join('');
   const stepsHtml = steps ? `<div class="steps"><div class="steps-title">Operations performed</div><ol>${steps}</ol></div>` : '';
   const envLines = Object.entries(env || {}).map(([k,v]) => `${k}: ${v}`).join('\n');
   const det = (t.detail || steps || envLines) ? `<details><summary>Steps, details & environment</summary><div class="cbody">${stepsHtml}<p>${esc(t.detail)}</p><div class="kv">technical detail (raw)\n${esc(t.detail)}\n\nenvironment & conditions:\n${esc(envLines)}</div></div></details>` : '';
-  const prevHtml = (prevRuns && prevRuns.length)
-    ? `<div class="prev-runs">previous runs of ${esc(t.id)}: ${prevRuns.map(h => `<a class="h-link ${h.ok?'h-ok':'h-bad'}" href="entry.html?run=${encodeURIComponent(h.run)}#case-${encodeURIComponent(t.id)}">${esc(h.run)}:${h.ok?'✓':'✗'}</a>`).join(' · ')}</div>`
-    : '';
-  return `<div class="case" id="case-${esc(t.id)}"><div class="chead"><span class="cid">${esc(t.id)}</span><span class="ctitle">${esc(t.title)}</span><span class="cmark ${t.ok?'ok':'bad'}">${mark}</span></div><p>${esc(prose)}</p>${det}${prevHtml}</div>`;
+  return `<div class="case" id="case-${esc(t.id)}"><div class="chead"><a class="cid" href="catalog.html#cat-${encodeURIComponent(t.id)}" title="How this test works — full steps in the catalog">${esc(t.id)}</a><span class="ctitle">${esc(t.title)}</span><span class="cmark ${t.ok?'ok':'bad'}">${mark}</span></div><p>${esc(prose)}</p>${det}</div>`;
 }
 
 function displayTitle(run) {
@@ -175,13 +175,11 @@ async function renderEntry() {
   const env = runEnv(run);
   const mt = run.meta.model ? ` · model: ${esc(run.meta.model)}` : '';
   $('#status').remove();
-  const prevById = {};
-  runs.forEach(r => { if (r.meta.run === run.meta.run) return; r.results.forEach(t => { (prevById[t.id] = prevById[t.id] || []).push({run: r.meta.run, ok: t.ok}); }); });
   $('#content').innerHTML = `<a class="backlink" href="index.html">← all entries</a>
 <article class="run"><h2>${esc(displayTitle(run))}</h2>
 <div class="rundate">${esc(run.meta.run)} · ${esc(run.meta.timestamp)} · ${run.passed}/${run.total} passed${mt}</div>
 <p class="runintro">${esc(runIntro(run))}</p>
-${run.results.map(t => caseHtml(t, env, prevById[t.id])).join('')}</article>`;
+${run.results.map(t => caseHtml(t, env)).join('')}</article>`;
 }
 
 // ---- catalog page ----
@@ -190,15 +188,20 @@ async function renderCatalog() {
   const runs = await loadAll();
   const catalog = {};
   runs.forEach(r => r.results.forEach(t => {
-    if (!catalog[t.id]) catalog[t.id] = {id: t.id, title: t.title, desc: t.desc || '', hist: []};
+    if (!catalog[t.id]) catalog[t.id] = {id: t.id, title: t.title, desc: t.desc || '', hist: [], steps: null, prose: ''};
     catalog[t.id].hist.push({run: r.meta.run, ok: t.ok});
+    const st = Array.isArray(t.steps) ? t.steps : (typeof t.steps === 'string' && t.steps ? [t.steps] : []);
+    const real = st.filter(s => !/^Re-run of generator/.test(s));
+    if (real.length && !catalog[t.id].steps) catalog[t.id].steps = real;
+    if (!catalog[t.id].prose && t.prose && !/^Re-run/.test(t.prose)) catalog[t.id].prose = t.prose;
   }));
   $('#status').textContent = `${Object.keys(catalog).length} unique test cases across ${runs.length} runs`;
   const cats = Object.values(catalog).sort((a,b) => a.id.localeCompare(b.id)).map(c => {
     const p = c.hist.filter(h => h.ok).length, n = c.hist.length;
     const cls = p === n ? 'ok' : (p === 0 ? 'bad' : 'mixed');
     const hist = c.hist.map(h => `<a class="h-link ${h.ok?'h-ok':'h-bad'}" href="entry.html?run=${encodeURIComponent(h.run)}">${esc(h.run)}:${h.ok?'✓':'✗'}</a>`).join(' · ');
-    return `<div class="cat"><div class="chead"><span class="cat-id">${esc(c.id)}</span><span class="cat-title">${esc(c.title)}</span><span class="cat-pass ${cls}">${p}/${n}</span></div><p>${esc(c.desc)}</p><div class="hist">${hist}</div></div>`;
+    const stepsHtml = (c.steps && c.steps.length) ? `<div class="steps"><div class="steps-title">How this test works</div><ol>${c.steps.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>` : '';
+    return `<div class="cat" id="cat-${esc(c.id)}"><div class="chead"><span class="cat-id">${esc(c.id)}</span><span class="cat-title">${esc(c.title)}</span><span class="cat-pass ${cls}">${p}/${n}</span></div><p>${esc(c.desc)}</p>${stepsHtml}<div class="hist">${hist}</div></div>`;
   }).join('');
   $('#content').innerHTML = `<section style="font-family:-apple-system,sans-serif"><p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">Every distinct case ever executed, with all-time pass rate and per-run history — rebuilt from run data each time you open this page.</p></section>${cats}`;
 }
