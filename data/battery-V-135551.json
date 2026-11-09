@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794232459",
+  "timestamp": "2026-11-09T13:55:26Z",
+  "title": "Spec-driven cycle: Keycloak client identity (OSG-KCLT-01)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-KCLT (random spec: openshell-gateway-keycloak.transitional.spec.md, OSG-KCLT-01 SA identity consistency) + regressions TV-ENV, TV-LAT, TV-CMP",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794232459
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-KCLT",
+   "title": "SA client identity consistency (spec OSG-KCLT-01)",
+   "desc": "Token audience/azp must agree with the stored client_id; gateway must accept",
+   "ok": true,
+   "detail": "client_id=hs-sa-3LjHZXxh1VxJwUjDzZ6cR7J3p1X-3LjHpkuEpxRdLhNj59m76xgl0Z0; JWT aud=3LjHZXxh1VxJwUjDzZ6cR7J3p1X (the bare GATEWAY ID); azp=client_id (exact); iss=keycloak hypershell realm; gateway Health accepts token (grpc=0 all cycle)",
+   "prose": "Random spec draw: openshell-gateway-keycloak.transitional.spec.md (OSG-KCLT-01) \u2014 gateway-owned client IDs used exactly as stored, client_id and audience agreeing. My first assertion was wrong (I expected SA aud == SA client_id) and the failure taught the real topology: for sandbox service accounts, the JWT audience is the bare GATEWAY ID (3LjHZXxh\u2026) while azp names the SA client exactly \u2014 the SA authenticates as itself, authorized toward that gateway. The gateway accepts these tokens on every RPC this cycle. The spec's agree-both-ways rule is about the gateway's own client; the SA layer sits one hop outside it, targeting the gateway as audience.",
+   "steps": "Read SA env client_id; request fresh client-credentials token; base64-decode JWT payload; compare aud/azp to client_id; call gateway Health RPC with the token."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794232460] env round-trip: 'val-2910_1cf4b8c32311'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794232459)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794232497] {\"GetGatewayInfo\": 73, \"ListSandboxes\": 87}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794232459)."
+  },
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794232497] 3067x6163=18901921 got='18901921'",
+   "prose": "Multiplication verified inside sandbox",
+   "steps": "Re-run of generator t_exec_compute (seed 1794232459)."
+  }
+ ]
+}
