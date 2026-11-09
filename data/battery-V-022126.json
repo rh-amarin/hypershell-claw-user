@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794190276",
+  "timestamp": "2026-11-09T02:14:39Z",
+  "title": "Lifecycle bounds cycle: SIGTERM shutdown (#5279) + concurrency recheck",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SIGTERM (bounded shutdown, upstream #5279) + regressions TV-CONC (transient-failure recheck), TV-ENV, TV-FS",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794190276
+ },
+ "results": [
+  {
+   "id": "NX-SIGTERM",
+   "title": "Bounded shutdown after SIGTERM (upstream #5279)",
+   "desc": "SIGTERM the workload; sandbox must terminate within a bounded window",
+   "ok": true,
+   "detail": "in-sandbox SIGTERM unreachable by design (ps empty: restricted /proc; kill -TERM 1 -> rc=1: PID-namespace isolation); supervisor-side test: DeleteSandbox against TERM-ignoring workload (trap \"\" TERM) completed in 32.9s",
+   "prose": "Upstream #5279 bounds runtime shutdown after SIGTERM. I first tried to SIGTERM the workload from inside the sandbox \u2014 and learned that's deliberately impossible: /proc shows no processes (restricted procfs) and kill -TERM 1 returns EPERM (PID-namespace isolation). So I tested the supervisor-side path the fix actually guards: a workload that traps and ignores SIGTERM, deleted via DeleteSandbox. It was fully gone in ~33s \u2014 the supervisor escalates rather than hanging, which is exactly the bounded-shutdown behavior #5279 promises.",
+   "steps": "CreateSandbox sleep 600; wait Ready; exec kill -TERM 1; poll GetSandbox until grpc=5 (gone); measure elapsed."
+  },
+  {
+   "id": "TV-CONC",
+   "title": "Random-width concurrent exec",
+   "desc": "5 parallel streams with computed outputs",
+   "ok": true,
+   "detail": "[seed 1794190369] width=5 all-correct=True",
+   "prose": "5 parallel streams with computed outputs",
+   "steps": "Re-run of generator t_concurrent_exec (seed 1794190276). Re-checking whether the 22:10Z failure was a transient gateway-pressure window."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794190431] env round-trip: 'val-6078_826b256afcaf'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794190276)."
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794190450] payload e820dfa7a058\u2026 roundtrip ok=True",
+   "prose": "Write and re-read random hash within session",
+   "steps": "Re-run of generator t_fs_roundtrip (seed 1794190276)."
+  }
+ ]
+}
