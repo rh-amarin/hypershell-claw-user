@@ -126,11 +126,13 @@ function runEnv(run) {
   return env;
 }
 
-function caseHtml(t, env) {
+function caseHtml(t, env, fallbackSteps) {
   const mark = t.ok ? '✓ passed' : '✗ failed/finding';
   const prose = t.prose || t.desc || t.title;
   const rawSteps = Array.isArray(t.steps) ? t.steps : (typeof t.steps === 'string' && t.steps ? [t.steps] : []);
-  const steps = rawSteps.filter(s => !/^Re-run of generator/.test(s)).map(s => `<li>${esc(s)}</li>`).join('');
+  let stepList = rawSteps.filter(s => !/^Re-run of generator/.test(s));
+  if (!stepList.length && fallbackSteps && fallbackSteps.length) stepList = fallbackSteps;
+  const steps = stepList.map(s => `<li>${esc(s)}</li>`).join('');
   const stepsHtml = steps ? `<div class="steps"><div class="steps-title">Operations performed</div><ol>${steps}</ol></div>` : '';
   const envLines = Object.entries(env || {}).map(([k,v]) => `${k}: ${v}`).join('\n');
   const det = (t.detail || steps || envLines) ? `<details><summary>Steps, details & environment</summary><div class="cbody">${stepsHtml}<p>${esc(t.detail)}</p><div class="kv">technical detail (raw)\n${esc(t.detail)}\n\nenvironment & conditions:\n${esc(envLines)}</div></div></details>` : '';
@@ -162,6 +164,7 @@ async function renderIndex() {
     return `<a class="entrylink" href="entry.html?run=${encodeURIComponent(run.meta.run)}"><span class="escore ${cls}">${run.passed}/${run.total}</span><div class="etitle">${esc(displayTitle(run))}</div><div class="emeta">${esc(run.meta.run)} · ${esc(run.meta.timestamp)}${esc(mt)}</div></a>`;
   }).join('\n');
   $('#content').innerHTML = `<p style="font-family:-apple-system,sans-serif;color:#4a5060;font-size:.92rem;max-width:44rem;margin-bottom:1.5rem">An ongoing real-user simulation of the <b>hypershell</b> platform — ${runs.length} entries, ${runs.reduce((a,r)=>a+r.passed,0)}/${runs.reduce((a,r)=>a+r.total,0)} cases passed, ${Object.keys(catalog).length} unique test cases. Each entry is a full run write-up.</p>${links}`;
+  revealHash();
 }
 
 // ---- entry page (single template, run chosen by ?run=) ----
@@ -175,11 +178,19 @@ async function renderEntry() {
   const env = runEnv(run);
   const mt = run.meta.model ? ` · model: ${esc(run.meta.model)}` : '';
   $('#status').remove();
+  const stepsById = {};
+  runs.forEach(r => r.results.forEach(t => {
+    if (stepsById[t.id]) return;
+    const st = Array.isArray(t.steps) ? t.steps : (typeof t.steps === 'string' && t.steps ? [t.steps] : []);
+    const real = st.filter(s => !/^Re-run of generator/.test(s));
+    if (real.length) stepsById[t.id] = real;
+  }));
   $('#content').innerHTML = `<a class="backlink" href="index.html">← all entries</a>
 <article class="run"><h2>${esc(displayTitle(run))}</h2>
 <div class="rundate">${esc(run.meta.run)} · ${esc(run.meta.timestamp)} · ${run.passed}/${run.total} passed${mt}</div>
 <p class="runintro">${esc(runIntro(run))}</p>
-${run.results.map(t => caseHtml(t, env)).join('')}</article>`;
+${run.results.map(t => caseHtml(t, env, stepsById[t.id])).join('')}</article>`;
+  revealHash();
 }
 
 // ---- catalog page ----
@@ -204,6 +215,14 @@ async function renderCatalog() {
     return `<div class="cat" id="cat-${esc(c.id)}"><div class="chead"><span class="cat-id">${esc(c.id)}</span><span class="cat-title">${esc(c.title)}</span><span class="cat-pass ${cls}">${p}/${n}</span></div><p>${esc(c.desc)}</p>${stepsHtml}<div class="hist">${hist}</div></div>`;
   }).join('');
   $('#content').innerHTML = `<section style="font-family:-apple-system,sans-serif"><p style="color:#4a5060;font-size:.9rem;margin-bottom:1rem">Every distinct case ever executed, with all-time pass rate and per-run history — rebuilt from run data each time you open this page.</p></section>${cats}`;
+  revealHash();
+}
+
+function revealHash() {
+  if (location.hash.length > 1) {
+    const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if (el) el.scrollIntoView();
+  }
 }
 
 $('#built').textContent = new Date().toISOString().replace('T',' ').slice(0,16) + ' UTC';
