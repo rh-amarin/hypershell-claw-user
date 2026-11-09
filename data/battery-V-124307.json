@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794228084",
+  "timestamp": "2026-11-09T12:42:57Z",
+  "title": "Spec-driven cycle: duplicate-activation safety (UIS-INT-05)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-UIS (random spec: standards/ui/interaction.spec.md, UIS-INT-05 duplicate activation) + regressions TV-ENV, TV-LBL, TV-FS",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794228084
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-UIS",
+   "title": "Duplicate activation safety (spec UIS-INT-05)",
+   "desc": "Second identical CreateSandbox must not produce a duplicate sandbox",
+   "ok": true,
+   "detail": "first grpc=0; duplicate grpc=6 (sandbox 'lemon-uis-28084' already exists); instances=1; state=ready",
+   "prose": "Random spec draw: standards/ui/interaction.spec.md, requirement UIS-INT-05 \u2014 duplicate activation shall not produce duplicate consequential effects. That's a UI standard, but its API analog is the real-user question: what happens when a client double-sends CreateSandbox for the same name (no request_id)? The gateway rejected the duplicate with a clear already-exists error, and exactly one sandbox existed afterward \u2014 conformant.",
+   "steps": "CreateSandbox name=X (no request_id); wait Ready; re-issue identical CreateSandbox; ListSandboxes; count instances of X; expect 1 instance and either a clear rejection or idempotent acceptance."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794228103] env round-trip: 'val-1184_a1a3f67f6797'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794228084)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle8123 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794228123] ready=ready match=True",
+   "prose": "cycle=cycle8123 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794228084)."
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794228144] payload bf2719832818\u2026 roundtrip ok=True",
+   "prose": "Write and re-read random hash within session",
+   "steps": "Re-run of generator t_fs_roundtrip (seed 1794228084)."
+  }
+ ]
+}

@@ -96,5 +96,12 @@
   "timestamp": "2026-11-09T09:13:11Z",
   "title": "Spec-driven cycle: gateway release distribution (OBS-RLSD-01)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-124307.json",
+  "run": "battery-V-1794228084",
+  "timestamp": "2026-11-09T12:42:57Z",
+  "title": "Spec-driven cycle: duplicate-activation safety (UIS-INT-05)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
