@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794215526",
+  "timestamp": "2026-11-09T09:13:11Z",
+  "title": "Spec-driven cycle: gateway release distribution (OBS-RLSD-01)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-RLSD (random spec: gateway-release-distribution.spec.md, requirement OBS-RLSD-01 \u2014 version observation half) + regressions TV-ENV, TV-LBL, TV-LAT",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794215526
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-RLSD",
+   "title": "Gateway version observation (spec OBS-RLSD-01)",
+   "desc": "Gateway /health must report the observed gateway_version used for release distribution",
+   "ok": true,
+   "detail": "Health RPC (openshell.v1.OpenShell/Health, gRPC-web) returns status=1 + version 0.1.6-rhaiv.2 \u2014 identical to GetGatewayInfo gateway_version; no REST /health endpoint exists on the gateway route (404 on /health, /healthz, /ready, /metrics...; the spec's '/health' is the gRPC Health RPC)",
+   "prose": "Random spec draw: gateway-release-distribution.spec.md, requirement OBS-RLSD-01 \u2014 fleet gateways counted by the version they report on health. First probe taught me the spec's '/health endpoint' is not REST: every plain path 404s on the gateway route. The actual source is the gRPC Health RPC, which returns status=1 and version 0.1.6-rhaiv.2 \u2014 byte-identical to GetGatewayInfo's gateway_version. The release-distribution aggregation input is consistent across both surfaces, so the dashboard's per-version counts would be built on coherent data. Fleet-wide counting still needs the owner token (dead).",
+   "steps": "Random spec selection: find specs -name '*.spec.md' | shuf -n1 \u2192 gateway-release-distribution.spec.md; read OBS-RLSD-01; GetGatewayInfo for gRPC-reported version; GET /health on the gateway route; compare."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794215526] env round-trip: 'val-6330_7fa724a89f70'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794215526)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle5559 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794215559] ready=ready match=True",
+   "prose": "cycle=cycle5559 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794215526)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794215590] {\"GetGatewayInfo\": 76, \"ListSandboxes\": 90}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794215526)."
+  }
+ ]
+}
