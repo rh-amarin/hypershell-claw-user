@@ -1,51 +1,15 @@
 [
- {
-  "file": "data/battery-1.json",
-  "run": "battery-1",
-  "timestamp": "2026-11-06T12:19:00Z",
-  "title": "First contact: sandbox lifecycle, network policies, and failure modes",
-  "model": ""
- },
- {
-  "file": "data/battery-2.json",
-  "run": "battery-2",
-  "timestamp": "2026-11-07T09:55:00Z",
-  "title": "Reusable pieces: templates, service exposure, labels, concurrency",
-  "model": ""
- },
- {
-  "file": "data/battery-3.json",
-  "run": "battery-3",
-  "timestamp": "2026-11-08T14:15:00Z",
-  "title": "The edge cases: ephemeral FS across restarts, unsupported suspend, fleet stats",
-  "model": ""
- },
- {
-  "file": "data/battery-V-1794149471.json",
-  "run": "battery-V-1794149471",
-  "timestamp": "2026-11-08T14:51:11Z",
-  "title": "First variable cycle: seeded-random configs across the test pool",
-  "model": ""
- },
- {
-  "file": "data/battery-MA-glm.json",
-  "run": "battery-MA-glm",
-  "timestamp": "2026-11-08T16:08:10Z",
-  "title": "Model comparison A: GLM-5.3 runs the variable battery",
-  "model": "GLM-5.3 (rits/zai-org/glm-5-3)"
- },
- {
-  "file": "data/battery-MB-sol.json",
-  "run": "battery-MB-sol",
-  "timestamp": "2026-11-08T16:14:00Z",
-  "title": "Model comparison B: gpt-6.1-sol runs the variable battery",
-  "model": "gpt-6.1-sol"
- },
- {
-  "file": "data/battery-V-1794161536.json",
-  "run": "battery-V-1794161536",
-  "timestamp": "2026-11-08T18:14:00Z",
-  "title": "Upstream fixes visible: policy-anchor validation and trace forwarding, plus regression set",
-  "model": ""
- }
+{"file": "data/battery-1.json", "run": "battery-1", "timestamp": "2026-11-06T12:19:00Z", "title": "First contact: sandbox lifecycle, network policies, and failure modes", "model": ""},
+{"file": "data/battery-2.json", "run": "battery-2", "timestamp": "2026-11-07T09:55:00Z", "title": "Reusable pieces: templates, service exposure, labels, concurrency", "model": ""},
+{"file": "data/battery-3.json", "run": "battery-3", "timestamp": "2026-11-08T14:15:00Z", "title": "The edge cases: ephemeral FS across restarts, unsupported suspend, fleet stats", "model": ""},
+{"file": "data/battery-V-1794149471.json", "run": "battery-V-1794149471", "timestamp": "2026-11-08T14:51:11Z", "title": "First variable cycle: seeded-random configs across the test pool", "model": ""},
+{"file": "data/battery-MA-glm.json", "run": "battery-MA-glm", "timestamp": "2026-11-08T16:08:10Z", "title": "Model comparison A: GLM-5.3 runs the variable battery", "model": "GLM-5.3 (rits/zai-org/glm-5-3)"},
+{"file": "data/battery-MB-sol.json", "run": "battery-MB-sol", "timestamp": "2026-11-08T16:14:00Z", "title": "Model comparison B: gpt-6.1-sol runs the variable battery", "model": "gpt-6.1-sol"},
+{"file": "data/battery-V-1794161536.json", "run": "battery-V-1794161536", "timestamp": "2026-11-08T18:14:00Z", "title": "Upstream fixes visible: policy-anchor validation and trace forwarding, plus regression set", "model": ""},
+{"file": "data/battery-V-215740.json", "run": "battery-V-1794174835", "timestamp": "2026-11-08T21:56:13Z", "title": "Upstream-inspired cycle: workload identity + regressions", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"},
+{"file": "data/battery-V-221552.json", "run": "battery-V-1794175916", "timestamp": "2026-11-08T22:13:17Z", "title": "Resilience cycle: churn (#5211) — concurrency fail + hsctl session death", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"},
+{"file": "data/battery-V-015550.json", "run": "battery-V-1794189271", "timestamp": "2026-11-09T01:55:41Z", "title": "Policy validation cycle (#4968) + token outage noted", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"},
+{"file": "data/battery-V-022126.json", "run": "battery-V-1794190276", "timestamp": "2026-11-09T02:14:39Z", "title": "Lifecycle bounds cycle: SIGTERM shutdown (#5279) + concurrency recheck", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"},
+{"file": "data/battery-V-055458.json", "run": "battery-V-1794203627", "timestamp": "2026-11-09T05:54:38Z", "title": "Introspection cycle: gateway info surface", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"},
+{"file": "data/battery-V-061354.json", "run": "battery-V-1794204672", "timestamp": "2026-11-09T06:13:46Z", "title": "Retry-safety cycle: idempotent create (request_id)", "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"}
 ]
