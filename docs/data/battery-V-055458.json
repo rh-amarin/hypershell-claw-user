@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794203627",
+  "timestamp": "2026-11-09T05:54:38Z",
+  "title": "Introspection cycle: gateway info surface",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-INFO (GetGatewayInfo full surface, upstream #5336/#5348 context) + regressions TV-ENV, TV-LBL, TV-LAT; owner-token fleet cases still skipped (hsctl session dead since Nov 8 22:12Z)",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794203627
+ },
+ "results": [
+  {
+   "id": "NX-INFO",
+   "title": "Gateway introspection surface",
+   "desc": "GetGatewayInfo returns status, version, drivers, extensions",
+   "ok": true,
+   "detail": "grpc=0; status=1 (enum healthy, not string); gateway_version=0.1.6-rhaiv.2; compute_driver=kubernetes (openshell.compute.contract); extensions: kubernetes/compute, vault/credentials (openshell.credentials.contract), regex/supervisor-middleware; body=441B",
+   "prose": "GetGatewayInfo is the surface every client bootstraps from, so I dumped its full response. My first assertion was wrong \u2014 I looked for the string 'Healthy' but status is a protobuf enum (value 1), a nice reminder to read the schema before asserting. The call returns service status, gateway version 0.1.6-rhaiv.2, the kubernetes compute driver with its contract, and three negotiated extensions: kubernetes compute, a vault-backed credentials driver, and a regex supervisor middleware. Full coherent introspection surface, which is what the REST/WS alignment (#5336) and OTLP gating (#5348) work depends on.",
+   "steps": [
+    "GetGatewayInfo with empty request",
+    "parse response for status, version pattern, driver/extension fields."
+   ]
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794203627] env round-trip: 'val-5941_fd25bdff9eef'",
+   "prose": "Two random env vars verified in exec",
+   "steps": [
+    "Re-run of generator t_env_injection (seed 1794203627)."
+   ]
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle3646 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794203646] ready=ready match=True",
+   "prose": "cycle=cycle3646 matches only this sandbox",
+   "steps": [
+    "Re-run of generator t_label_selector (seed 1794203627)."
+   ]
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794203678] {\"GetGatewayInfo\": 76, \"ListSandboxes\": 91}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": [
+    "Re-run of generator t_rpc_latency (seed 1794203627)."
+   ]
+  }
+ ]
+}
