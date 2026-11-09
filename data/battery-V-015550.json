@@ -19,7 +19,9 @@
    "ok": true,
    "detail": "[seed 1794189271] env round-trip: 'val-5221_446baae3f088'",
    "prose": "Two random env vars verified in exec",
-   "steps": "Re-run of generator t_env_injection from battery-variable.py (seed 1794189271)."
+   "steps": [
+    "Re-run of generator t_env_injection from battery-variable.py (seed 1794189271)."
+   ]
   },
   {
    "id": "TV-LBL",
@@ -28,7 +30,9 @@
    "ok": true,
    "detail": "[seed 1794189287] ready=ready match=True",
    "prose": "cycle=cycle9287 matches only this sandbox",
-   "steps": "Re-run of generator t_label_selector from battery-variable.py (seed 1794189271)."
+   "steps": [
+    "Re-run of generator t_label_selector from battery-variable.py (seed 1794189271)."
+   ]
   },
   {
    "id": "TV-CMP",
@@ -37,7 +41,9 @@
    "ok": true,
    "detail": "[seed 1794189307] 6786x2838=19258668 got='19258668'",
    "prose": "Multiplication verified inside sandbox",
-   "steps": "Re-run of generator t_exec_compute from battery-variable.py (seed 1794189271)."
+   "steps": [
+    "Re-run of generator t_exec_compute from battery-variable.py (seed 1794189271)."
+   ]
   },
   {
    "id": "NX-ALLOWENC",
@@ -46,7 +52,13 @@
    "ok": true,
    "detail": "single grpc=0 stored=True; multi grpc=0 stored=True; (rule name max 19 chars enforced: 20/21-char names rejected grpc=3)",
    "prose": "Upstream #4968 fixed policy updates that broke when the CLI passed allow-encoded-slash style content. From the gRPC side I verified the policy surface stays healthy: single- and multi-endpoint network rules (multiple hosts, multiple binaries) create cleanly and are stored verbatim on the sandbox record. Along the way I mapped a small validation boundary \u2014 policy rule names are capped at 19 characters, and NetworkEndpoint has a strict protocol field that rejects malformed wire encoding \u2014 both useful facts for policy tooling.",
-   "steps": "CreateSandbox with single-endpoint policy; GetSandbox verify stored; CreateSandbox with multi-endpoint+multi-binary policy; GetSandbox verify; DeleteSandbox both."
+   "steps": [
+    "CreateSandbox with single-endpoint policy",
+    "GetSandbox verify stored",
+    "CreateSandbox with multi-endpoint+multi-binary policy",
+    "GetSandbox verify",
+    "DeleteSandbox both."
+   ]
   }
  ]
 }

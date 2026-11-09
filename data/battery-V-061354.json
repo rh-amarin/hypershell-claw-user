@@ -19,7 +19,14 @@
    "ok": true,
    "detail": "first grpc=0 ready=ready; retry grpc=0 (); instances-of-name=1",
    "prose": "CreateSandbox accepts an optional request_id UUID for durable at-most-once admission \u2014 the retry-safety story for flaky clients. I created a sandbox with a fresh UUID, then re-issued the exact same create (same name, same request_id) to simulate a client retry. The retry was accepted (grpc=0) and exactly one instance of the sandbox exists \u2014 a client that times out and retries gets safe, idempotent behavior.",
-   "steps": "CreateSandbox with request_id=UUID; wait Ready; re-issue identical create; ListSandboxes; count instances of name; cleanup."
+   "steps": [
+    "CreateSandbox with request_id=UUID",
+    "wait Ready",
+    "re-issue identical create",
+    "ListSandboxes",
+    "count instances of name",
+    "cleanup."
+   ]
   },
   {
    "id": "TV-ENV",
@@ -28,7 +35,9 @@
    "ok": true,
    "detail": "[seed 1794204734] env round-trip: 'val-8664_7e34e9ac110f'",
    "prose": "Two random env vars verified in exec",
-   "steps": "Re-run of generator t_env_injection (seed 1794204672)."
+   "steps": [
+    "Re-run of generator t_env_injection (seed 1794204672)."
+   ]
   },
   {
    "id": "TV-LBL",
@@ -37,7 +46,9 @@
    "ok": true,
    "detail": "[seed 1794204766] ready=ready match=True",
    "prose": "cycle=cycle4766 matches only this sandbox",
-   "steps": "Re-run of generator t_label_selector (seed 1794204672)."
+   "steps": [
+    "Re-run of generator t_label_selector (seed 1794204672)."
+   ]
   },
   {
    "id": "TV-CMP",
@@ -46,7 +57,9 @@
    "ok": true,
    "detail": "[seed 1794204797] 2409x2711=6530799 got='6530799'",
    "prose": "Multiplication verified inside sandbox",
-   "steps": "Re-run of generator t_exec_compute (seed 1794204672)."
+   "steps": [
+    "Re-run of generator t_exec_compute (seed 1794204672)."
+   ]
   }
  ]
 }

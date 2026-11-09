@@ -19,7 +19,13 @@
    "ok": true,
    "detail": "in-sandbox SIGTERM unreachable by design (ps empty: restricted /proc; kill -TERM 1 -> rc=1: PID-namespace isolation); supervisor-side test: DeleteSandbox against TERM-ignoring workload (trap \"\" TERM) completed in 32.9s",
    "prose": "Upstream #5279 bounds runtime shutdown after SIGTERM. I first tried to SIGTERM the workload from inside the sandbox \u2014 and learned that's deliberately impossible: /proc shows no processes (restricted procfs) and kill -TERM 1 returns EPERM (PID-namespace isolation). So I tested the supervisor-side path the fix actually guards: a workload that traps and ignores SIGTERM, deleted via DeleteSandbox. It was fully gone in ~33s \u2014 the supervisor escalates rather than hanging, which is exactly the bounded-shutdown behavior #5279 promises.",
-   "steps": "CreateSandbox sleep 600; wait Ready; exec kill -TERM 1; poll GetSandbox until grpc=5 (gone); measure elapsed."
+   "steps": [
+    "CreateSandbox sleep 600",
+    "wait Ready",
+    "exec kill -TERM 1",
+    "poll GetSandbox until grpc=5 (gone)",
+    "measure elapsed."
+   ]
   },
   {
    "id": "TV-CONC",
@@ -28,7 +34,10 @@
    "ok": true,
    "detail": "[seed 1794190369] width=5 all-correct=True",
    "prose": "5 parallel streams with computed outputs",
-   "steps": "Re-run of generator t_concurrent_exec (seed 1794190276). Re-checking whether the 22:10Z failure was a transient gateway-pressure window."
+   "steps": [
+    "Re-run of generator t_concurrent_exec (seed 1794190276)",
+    "Re-checking whether the 22:10Z failure was a transient gateway-pressure window."
+   ]
   },
   {
    "id": "TV-ENV",
@@ -37,7 +46,9 @@
    "ok": true,
    "detail": "[seed 1794190431] env round-trip: 'val-6078_826b256afcaf'",
    "prose": "Two random env vars verified in exec",
-   "steps": "Re-run of generator t_env_injection (seed 1794190276)."
+   "steps": [
+    "Re-run of generator t_env_injection (seed 1794190276)."
+   ]
   },
   {
    "id": "TV-FS",
@@ -46,7 +57,9 @@
    "ok": true,
    "detail": "[seed 1794190450] payload e820dfa7a058\u2026 roundtrip ok=True",
    "prose": "Write and re-read random hash within session",
-   "steps": "Re-run of generator t_fs_roundtrip (seed 1794190276)."
+   "steps": [
+    "Re-run of generator t_fs_roundtrip (seed 1794190276)."
+   ]
   }
  ]
 }

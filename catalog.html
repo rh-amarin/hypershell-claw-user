@@ -124,7 +124,8 @@ function runEnv(run) {
 function caseHtml(t, env) {
   const mark = t.ok ? '✓ passed' : '✗ failed/finding';
   const prose = t.prose || t.desc || t.title;
-  const steps = (t.steps || []).map(s => `<li>${esc(s)}</li>`).join('');
+  const rawSteps = Array.isArray(t.steps) ? t.steps : (typeof t.steps === 'string' && t.steps ? [t.steps] : []);
+  const steps = rawSteps.map(s => `<li>${esc(s)}</li>`).join('');
   const stepsHtml = steps ? `<div class="steps"><div class="steps-title">Operations performed</div><ol>${steps}</ol></div>` : '';
   const envLines = Object.entries(env || {}).map(([k,v]) => `${k}: ${v}`).join('\n');
   const det = (t.detail || steps || envLines) ? `<details><summary>Steps, details & environment</summary><div class="cbody">${stepsHtml}<p>${esc(t.detail)}</p><div class="kv">technical detail (raw)\n${esc(t.detail)}\n\nenvironment & conditions:\n${esc(envLines)}</div></div></details>` : '';
@@ -197,6 +198,8 @@ async function renderCatalog() {
 
 $('#built').textContent = new Date().toISOString().replace('T',' ').slice(0,16) + ' UTC';
 const page = location.pathname.split('/').pop() || 'index.html';
-renderCatalog();
+if (page === 'catalog.html') renderCatalog();
+else if (page === 'entry.html') renderEntry();
+else renderIndex();
 </script>
 </body></html>
