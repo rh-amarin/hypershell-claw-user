@@ -1,0 +1,57 @@
+{
+ "meta": {
+  "run": "battery-V-1794242497",
+  "timestamp": "2026-11-09T16:43:11Z",
+  "title": "Spec-driven cycle: inference router probe (AGT-INF-01)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-INF (random spec: openshell-inference-routing.spec.md, AGT-INF-01 inference.local interception) + regressions TV-ENV, TV-LBL, TV-CMP; upstream: dependency/safety/deploy hardening (no user-visible behavior)",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794242497
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-INF",
+   "title": "Inference router interception (spec AGT-INF-01)",
+   "desc": "inference.local must be intercepted by the supervisor, not real DNS",
+   "ok": true,
+   "detail": "DNS interception CONFIRMED: getent hosts inference.local -> 198.18.0.2 (supervisor virtual-IP range, resolves with or without network policy); HTTP layer unprobed: image has no curl/wget/python3, bash /dev/tcp connect denied at runtime, apt blocked by FS permissions (uid 1000880000) before networking",
+   "prose": "Random spec draw: openshell-inference-routing.spec.md (AGT-INF-01) \u2014 credential-free model access via the inference.local virtual host. From inside a sandbox, inference.local resolves to 198.18.0.2, the supervisor's interception range (the same fake-IP scheme as the egress proxy) \u2014 the virtual host is provisioned and DNS-intercepted on this gateway, exactly as the spec describes (not real DNS). The HTTP layer I could not verify: this ubuntu base image ships no curl/wget/python3, bash's /dev/tcp is denied at the runtime level even when the policy allows bash, and apt dies on filesystem permissions (the synthetic uid 1000880000 can't write /var/lib/apt) before any network call. Tooling, not platform \u2014 a curl-bearing image would finish this test in one command.",
+   "steps": [
+    "CreateSandbox (no policy); exec getent hosts inference.local \u2014 resolves to supervisor range 198.18.0.2",
+    "Repeat with network policy allowing inference.local \u2014 same resolution (supervisor-level, policy-independent)",
+    "Attempt HTTP probes: curl absent (rc=127), bash /dev/tcp connect denied, apt blocked by uid permissions pre-network",
+    "Conclusion: DNS interception confirmed; HTTP/router behavior unverified \u2014 needs a curl-bearing image"
+   ]
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794242530] env round-trip: 'val-6629_091b4e4808d9'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794242497)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle2551 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794242551] ready=ready match=True",
+   "prose": "cycle=cycle2551 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794242497)."
+  },
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794242571] 5598x785=4394430 got='4394430'",
+   "prose": "Multiplication verified inside sandbox",
+   "steps": "Re-run of generator t_exec_compute (seed 1794242497)."
+  }
+ ]
+}
