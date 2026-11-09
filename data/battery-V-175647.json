@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794246838",
+  "timestamp": "2026-11-09T17:56:38Z",
+  "title": "Spec-driven cycle: sandbox trend input verification (OBS-SBXT)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-SBXT (random spec: gateway-sandbox-active-trends.spec.md \u2014 active-count reality check) + regressions TV-ENV, TV-LBL, TV-LAT",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794246838
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-SBXT",
+   "title": "Active sandbox count tracks reality (spec OBS-SBXT input)",
+   "desc": "3 created \u2192 listed as active; deleted \u2192 gone",
+   "ok": true,
+   "detail": "listed-active-while-running=3/3; listed-after-delete=0/3",
+   "prose": "Random spec draw: gateway-sandbox-active-trends.spec.md \u2014 the dashboard's sandbox-usage trends are built from each gateway's advisory active_sandbox_count. I can't reach Prometheus from a sandbox, but I verified the underlying reality the gauge must track: created 3 sandboxes, confirmed all 3 appear in the gateway's sandbox listing while running, deleted them, confirmed the listing drops to zero. The trend's input is a live count, not a stale snapshot \u2014 and this cycle's create/list/delete churn is exactly the burst pattern the hourly 24h window exists to visualize.",
+   "steps": "CreateSandbox x3; wait all ready; ListSandboxes count = 3; DeleteSandbox x3; ListSandboxes count = 0."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794246945] env round-trip: 'val-1803_e87b9a8cd081'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794246838)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle6968 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794246968] ready=ready match=True",
+   "prose": "cycle=cycle6968 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794246838)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794246998] {\"GetGatewayInfo\": 68, \"ListSandboxes\": 81}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794246838)."
+  }
+ ]
+}

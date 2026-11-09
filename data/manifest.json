@@ -117,5 +117,12 @@
   "timestamp": "2026-11-09T16:43:11Z",
   "title": "Spec-driven cycle: inference router probe (AGT-INF-01)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-175647.json",
+  "run": "battery-V-1794246838",
+  "timestamp": "2026-11-09T17:56:38Z",
+  "title": "Spec-driven cycle: sandbox trend input verification (OBS-SBXT)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
