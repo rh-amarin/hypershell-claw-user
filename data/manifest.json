@@ -159,5 +159,12 @@
   "timestamp": "2026-11-10T06:12:32Z",
   "title": "Spec-driven cycle: live gateway TLS (OSG-TLS-01/02)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-095844.json",
+  "run": "battery-V-1794304480",
+  "timestamp": "2026-11-10T09:56:58Z",
+  "title": "Spec-driven cycle: api-server JWT + lifecycle interceptors (#5173)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
