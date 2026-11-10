@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794276684",
+  "timestamp": "2026-11-10T02:12:05Z",
+  "title": "Spec-driven cycle: web-console architecture static checks",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-ARCH (random spec: web-console/architecture.spec.md, WEB-ARCH-01/03 + WEB-PKG-01 static verification) + regressions TV-ENV, TV-LBL, TV-LAT; console runtime still blocked by egress policy",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794276684
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-ARCH",
+   "title": "Web console architecture static checks (spec WEB-ARCH-01/03, WEB-PKG-01)",
+   "desc": "ssr:false client-rendered; single pnpm workspace; workspace: protocol; packageManager pinned",
+   "ok": true,
+   "detail": "{\"ssr-false\": true, \"workspace\": see-prose (lone package-lock.json exists ONLY under prefetch/pnpm \u2014 the spec explicitly exempts it), \"workspace-protocol\": true, \"package-manager\": true}",
+   "prose": "Random spec draw: web-console/architecture.spec.md. The console runtime is unreachable from this sandbox (console host not in egress policy \u2014 the standing blocker), so I verified the architecture spec's statically checkable requirements against the source tree. React Router is configured ssr:false (client-rendered SPA per WEB-ARCH-01); internal packages bind through the workspace: protocol and packageManager pins an exact pnpm version (WEB-PKG-01). My one automated FAIL was my own over-strict check: a lone package-lock.json exists, but it's under prefetch/pnpm \u2014 the isolated bootstrap manifest the spec EXPLICITLY exempts from the single-workspace rule. Reading the spec before asserting matters; all four requirements actually hold.",
+   "steps": "Read react-router/vite configs for ssr:false; enumerate lockfiles at repo root and nested; parse web-console package.json for workspace: deps; check root package.json packageManager pin."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794276684] env round-trip: 'val-7998_b9ef35b52d82'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794276684)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle6703 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794276703] ready=ready match=True",
+   "prose": "cycle=cycle6703 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794276684)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794276725] {\"GetGatewayInfo\": 75, \"ListSandboxes\": 87}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794276684)."
+  }
+ ]
+}
