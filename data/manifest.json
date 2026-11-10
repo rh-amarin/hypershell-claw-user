@@ -194,5 +194,12 @@
   "timestamp": "2026-11-10T18:13:33Z",
   "title": "Spec-driven cycle: warm-up fix + sandbox count (OSG-SBX-01)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-221532.json",
+  "run": "battery-V-1794348703",
+  "timestamp": "2026-11-10T22:15:20Z",
+  "title": "Spec-driven cycle: homepage routes + workspace opt-in (#1016)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]

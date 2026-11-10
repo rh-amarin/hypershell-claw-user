@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794348703",
+  "timestamp": "2026-11-10T22:15:20Z",
+  "title": "Spec-driven cycle: homepage routes + workspace opt-in (#1016)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-HOME (random spec: web-console/homepage.spec.md WEB-HOME-01/02 route structure) + NX-WORKSPACE (upstream #1016 operator-managed workspaces baseline) + regressions TV-ENV, TV-LBL, TV-CMP with warm-up",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794348703
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-HOME",
+   "title": "Homepage routes structure (spec WEB-HOME-01/02)",
+   "desc": "SPA has / (home) and /gateways routes; registry pattern present",
+   "ok": true,
+   "detail": "route files: 20; home route: True; gateways route: True; registry refs: 1",
+   "prose": "Random spec draw: web-console/homepage.spec.md (WEB-HOME-01/02 \u2014 homepage at /, gateway list at /gateways, one internal route registry with constants like gatewayDetailPath). Static verification against the SPA source: the routes directory carries the expected structure with home and gateway routes present. The full registry discipline (no hard-coded path literals outside it) needs a build-time lint the repo specifies \u2014 noted as the deeper check for when the console is reachable.",
+   "steps": "Find app/routes/*.tsx; check home and gateway route files exist; grep for registry constant patterns."
+  },
+  {
+   "id": "NX-WORKSPACE",
+   "title": "Named workspace selection (upstream #1016 context)",
+   "desc": "CreateSandbox with default workspace still resolves",
+   "ok": true,
+   "detail": "ready=ready; workspace=default in record: True",
+   "prose": "Upstream #1016 adds a per-gateway opt-in to operator-managed workspaces \u2014 workspace handling is being made configurable. Baseline check from the sandbox side: CreateSandbox with the named workspace 'default' still creates, reaches Ready, and the record carries the workspace. Whatever mode a gateway opts into, the named-workspace contract our batteries rely on holds today.",
+   "steps": "CreateSandbox workspace=default; wait Ready; GetSandbox; verify workspace field present."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794348797] env round-trip: 'val-7154_69acccfe019c'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794348703)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle8829 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794348829] ready=ready match=True",
+   "prose": "cycle=cycle8829 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794348703)."
+  },
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794348858] 4308x1413=6087204 got='6087204'",
+   "prose": "Multiplication verified inside sandbox",
+   "steps": "Re-run of generator t_exec_compute (seed 1794348703)."
+  }
+ ]
+}
