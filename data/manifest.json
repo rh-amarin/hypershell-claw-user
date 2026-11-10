@@ -145,5 +145,12 @@
   "timestamp": "2026-11-10T02:12:05Z",
   "title": "Spec-driven cycle: web-console architecture static checks",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-055718.json",
+  "run": "battery-V-1794290075",
+  "timestamp": "2026-11-10T05:57:00Z",
+  "title": "Spec-driven cycle: domain probes + CLI token renewal (#4389)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]

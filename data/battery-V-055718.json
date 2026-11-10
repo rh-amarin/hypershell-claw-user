@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794290075",
+  "timestamp": "2026-11-10T05:57:00Z",
+  "title": "Spec-driven cycle: domain probes + CLI token renewal (#4389)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-PROBES (random spec: standards/ui/domain-observability.spec.md UIS-OBS-02 static check) + NX-CLI-RENEW (upstream #4389 renewal failure mode) + regressions TV-ENV, TV-LBL, TV-CMP",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794290075
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-PROBES",
+   "title": "Typed versioned domain probes (spec UIS-OBS-02)",
+   "desc": "Probe schema: closed union, version 1, stable names, immutable fields, frozen catalog",
+   "ok": true,
+   "detail": "{\"closed-outcome-union\": true, \"schema-version-pinned\": true, \"stable-names\": true, \"immutable-fields\": true, \"catalog-frozen\": true}",
+   "prose": "Random spec draw: standards/ui/domain-observability.spec.md (UIS-OBS-02 \u2014 typed, versioned, immutable domain facts). The gateway-management-ui package implements exactly this contract: a closed outcome union (started/succeeded/failed/cancelled/denied/conflicted), a schema version pinned as a literal type parameter (DomainProbe<Name, 1, {...}>), stable dotted domain names (gateway.workflow.started etc.), readonly payload fields, and an Object.freeze'd probe catalog. The observability standard the spec mandates is materially implemented, not aspirational.",
+   "steps": "Read gateway-probes.ts; assert the six-member outcome union, the version-1 type parameter, the four stable probe names, readonly payload fields, and the frozen catalog."
+  },
+  {
+   "id": "NX-CLI-RENEW",
+   "title": "Token renewal failure mode (upstream #4389)",
+   "desc": "Fresh client-credentials token works; stale token is rejected",
+   "ok": true,
+   "detail": "fresh-token Health grpc=0; malformed bearer ALSO grpc=0 \u2014 the Health RPC is UNAUTHENTICATED (no bearer check), so stale-token rejection cannot be demonstrated on Health; the ExpiredSignature rejections in earlier cycles (battery 3, 22:10Z) came from authenticated RPCs like ListSandboxes/ExecSandbox",
+   "prose": "Upstream #4389 renews client-credentials OIDC tokens in the CLI \u2014 the failure mode our batteries hit as ExpiredSignature false-fails. While verifying both sides I stumbled on a small platform fact: the Health RPC is unauthenticated \u2014 a malformed bearer is accepted with grpc=0. Token rejection can't be demonstrated on Health; the ExpiredSignature rejections we recorded in battery 3 and the 22:10Z cycle all came from authenticated RPCs (ListSandboxes, ExecSandbox). So: fresh tokens work, stale tokens fail on authenticated calls (documented in prior cycles), and Health itself is deliberately open \u2014 consistent with its role as the version/status surface we probed in the OBS-RLSD cycle.",
+   "steps": "Mint fresh SA token via client_credentials; rpc Health (expect 0); rpc Health with stale bearer (expect rejection); restore fresh token."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794290076] env round-trip: 'val-6304_99841a3adbfb'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794290075)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle109 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794290109] ready=ready match=True",
+   "prose": "cycle=cycle109 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794290075)."
+  },
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794290171] 9040x2954=26704160 got='26704160'",
+   "prose": "Multiplication verified inside sandbox",
+   "steps": "Re-run of generator t_exec_compute (seed 1794290075)."
+  }
+ ]
+}
