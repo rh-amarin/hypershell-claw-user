@@ -173,5 +173,12 @@
   "timestamp": "2026-11-10T13:55:50Z",
   "title": "Spec-driven cycle: fleet-total trend + SSH budgets (#5063)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-141404.json",
+  "run": "battery-V-1794319893",
+  "timestamp": "2026-11-10T14:12:30Z",
+  "title": "Spec-driven cycle: SDLC authorization gate (SDLC-JIRA-01)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
