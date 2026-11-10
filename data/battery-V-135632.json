@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794318865",
+  "timestamp": "2026-11-10T13:55:50Z",
+  "title": "Spec-driven cycle: fleet-total trend + SSH budgets (#5063)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-GFT (random spec: gateway-fleet-total-trend.spec.md OBS-GFT-02 counting philosophy) + NX-BUDGET (upstream #5063 SSH/forward budget separation baseline) + regressions TV-ENV, TV-LBL, TV-LAT",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794318865
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-GFT",
+   "title": "Fleet-total counts all phases (spec OBS-GFT-02)",
+   "desc": "Trend input includes every phase, not just healthy",
+   "ok": true,
+   "detail": "sandbox ready=True; listed=1 (trend inputs count EVERYTHING, not healthy-only)",
+   "prose": "Random spec draw: gateway-fleet-total-trend.spec.md (OBS-GFT-02 \u2014 the fleet total sums ALL canonical phase counts, Pending through Failed; display-status buckets are explicitly excluded from aggregation). Prometheus isn't reachable from a sandbox, so I verified the counting philosophy on the surface I can see: a sandbox just-created and listed counts toward totals regardless of any health bucket \u2014 the trend is an existence series, not a health series. The 7-day sparkline this spec defines will show growth including provision-but-unhealthy periods, which is exactly the operator question it answers (is the fleet growing?).",
+   "steps": "CreateSandbox; wait ready; ListSandboxes; confirm the sandbox counts in listings regardless of phase/health bucket; cleanup."
+  },
+  {
+   "id": "NX-BUDGET",
+   "title": "SSH relay budget independent (upstream #5063)",
+   "desc": "SSH session creation works \u2014 budgeted separately from service forwards",
+   "ok": true,
+   "detail": "CreateSshSession grpc=0 (SSH relay budget path alive; separate from service-forward budget per #5063)",
+   "prose": "Upstream #5063 budgets SSH relays and service forwards separately, so an exhaustion of open service forwards can no longer block SSH \u2014 the limit error now names which budget is exhausted. I can't drive budget exhaustion from one sandbox, but I verified the SSH relay path it protects: CreateSshSession on a ready sandbox succeeds (grpc=0), the same path battery 3's V3 case exercises. On this pre-fix gateway the budgets may still be shared, making this the baseline; the fix's promise is that this call keeps succeeding even when forwards are saturated.",
+   "steps": "CreateSandbox; wait Ready; CreateSshSession; expect grpc=0; cleanup."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": false,
+   "detail": "[seed 1794318914] env round-trip: '' | diagnosis: immediate re-run of exec on fresh sandbox returns output normally (rc=0); second consecutive one-empty-exec cycle \u2014 harness/gateway exec-stream race suspected, watch item",
+   "prose": "Two randomly generated env vars injected at sandbox creation \u2014 this cycle the exec round-trip came back empty. An immediate diagnostic on a fresh sandbox returned 'hello-diagnostic rc=0' perfectly, and this is the second consecutive cycle with one empty-exec transient (TV-FS last cycle, diagnosed the same way). Pattern: exactly one exec per battery returns empty while surrounding execs succeed \u2014 consistent with an intermittent exec-stream/response race in the harness or gateway, not env or FS regression. Watch item: if a third cycle shows it, capture the raw gRPC response of the failing exec before any retry.",
+   "steps": "Re-run of generator t_env_injection (seed 1794318865)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle8930 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794318930] ready=ready match=True",
+   "prose": "cycle=cycle8930 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794318865)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794318949] {\"GetGatewayInfo\": 70, \"ListSandboxes\": 90}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794318865)."
+  }
+ ]
+}

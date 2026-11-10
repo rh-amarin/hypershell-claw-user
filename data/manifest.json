@@ -166,5 +166,12 @@
   "timestamp": "2026-11-10T09:56:58Z",
   "title": "Spec-driven cycle: api-server JWT + lifecycle interceptors (#5173)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-135632.json",
+  "run": "battery-V-1794318865",
+  "timestamp": "2026-11-10T13:55:50Z",
+  "title": "Spec-driven cycle: fleet-total trend + SSH budgets (#5063)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
