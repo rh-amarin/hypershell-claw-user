@@ -131,5 +131,12 @@
   "timestamp": "2026-11-10T00:54:59Z",
   "title": "Delete-latency baseline (#4697) + upstream burst",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-015625.json",
+  "run": "battery-V-1794275651",
+  "timestamp": "2026-11-10T01:56:15Z",
+  "title": "Spec-driven cycle: e2e readiness proof (E2E-CORE-13.05)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]

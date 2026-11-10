@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794275651",
+  "timestamp": "2026-11-10T01:56:15Z",
+  "title": "Spec-driven cycle: e2e readiness proof (E2E-CORE-13.05)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-E2E (random spec: e2e-testing.spec.md, E2E-CORE-13.05 id -u readiness proof) + regressions TV-ENV, TV-FS, TV-CMP; upstream: Python SDK moved to ai-openshell/sdk-python (#5350)",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794275651
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-E2E",
+   "title": "User-facing readiness proof (spec E2E-CORE-13.05)",
+   "desc": "id -u must exit 0 with numeric UID; whoami may fail for rootless UIDs",
+   "ok": true,
+   "detail": "id -u -> 1000880000 rc=0 (True); whoami rc=0 (also works)",
+   "prose": "Random spec draw: e2e-testing.spec.md, scenario E2E-CORE-13.05 \u2014 the platform's own e2e suite uses `sandbox exec id -u` as the user-facing readiness proof, explicitly NOT whoami, because whoami exits non-zero for a rootless sandbox UID with no passwd entry. I replicated the scenario against this gateway: `id -u` returned the numeric UID 1000880000 with exit 0 \u2014 the readiness proof holds. `whoami` also succeeded here \u2014 milder than the spec's worst case, but id -u remains the portable proof.",
+   "steps": "CreateSandbox; wait Ready; exec 'id -u; echo rc' (expect numeric UID, rc=0); exec 'whoami; echo rc' (spec: may fail for rootless UID); cleanup."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794275683] env round-trip: 'val-7058_7fe16eca6ca5'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794275651)."
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794275714] payload a4282d0a55c3\u2026 roundtrip ok=True",
+   "prose": "Write and re-read random hash within session",
+   "steps": "Re-run of generator t_fs_roundtrip (seed 1794275651)."
+  },
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794275743] 6638x6002=39841276 got='39841276'",
+   "prose": "Multiplication verified inside sandbox",
+   "steps": "Re-run of generator t_exec_compute (seed 1794275651)."
+  }
+ ]
+}
