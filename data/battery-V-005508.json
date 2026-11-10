@@ -1,0 +1,52 @@
+{
+ "meta": {
+  "run": "battery-V-1794271972",
+  "timestamp": "2026-11-10T00:54:59Z",
+  "title": "Delete-latency baseline (#4697) + upstream burst",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-DELTIME (plain delete latency baseline, upstream #4697 opt-in delete timeout) + regressions TV-ENV, TV-LBL, TV-LAT. Upstream burst: 10 commits incl. fleet-dashboard glass E2E, gateway list UI redesign spec, CITrust resync",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794271972
+ },
+ "results": [
+  {
+   "id": "NX-DELTIME",
+   "title": "Plain delete latency baseline (upstream #4697)",
+   "desc": "DeleteSandbox on healthy sandbox; measure full-removal time",
+   "ok": true,
+   "detail": "delete grpc=0; fully gone in 2.8s (baseline for #4697 opt-in timeout)",
+   "prose": "Upstream #4697 added an opt-in delete timeout to the Python client because deletes can hang on slow workloads. I measured the healthy-workload baseline on the gRPC path: a plain sleep-300 sandbox, deleted via DeleteSandbox, fully disappeared from the gateway in 2.8s. That's the number a client-side timeout has to accommodate before it's safe to abandon a delete \u2014 anything tighter than ~30s risks declaring failure while the supervisor is still doing honest, bounded work (we saw 33s on a TERM-ignoring workload in the 02:10Z cycle).",
+   "steps": "CreateSandbox sleep 300; wait Ready; DeleteSandbox; poll GetSandbox until grpc=5; measure elapsed."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794272004] env round-trip: 'val-1079_78ddf4664c86'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794271972)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle2037 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794272037] ready=ready match=True",
+   "prose": "cycle=cycle2037 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794271972)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794272098] {\"GetGatewayInfo\": 152, \"ListSandboxes\": 84}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794271972)."
+  }
+ ]
+}

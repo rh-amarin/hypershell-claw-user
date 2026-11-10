@@ -124,5 +124,12 @@
   "timestamp": "2026-11-09T17:56:38Z",
   "title": "Spec-driven cycle: sandbox trend input verification (OBS-SBXT)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-005508.json",
+  "run": "battery-V-1794271972",
+  "timestamp": "2026-11-10T00:54:59Z",
+  "title": "Delete-latency baseline (#4697) + upstream burst",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
