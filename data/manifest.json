@@ -250,5 +250,12 @@
   "timestamp": "2026-11-11T13:56:53Z",
   "title": "Spec-driven cycle: delete idempotency + mandatory OIDC (#1015)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-175751.json",
+  "run": "battery-V-1794419679",
+  "timestamp": "2026-11-11T17:57:40Z",
+  "title": "Spec-driven cycle: health-means-serving + SecretSource spec (#1020)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]

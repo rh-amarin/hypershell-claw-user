@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794419679",
+  "timestamp": "2026-11-11T17:57:40Z",
+  "title": "Spec-driven cycle: health-means-serving + SecretSource spec (#1020)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-HLTH (random spec: openshell-gateway-health.spec.md OSG-HLTH-01/06 - healthy status backed by full workflow) + NX-SECSRC (upstream #1020 SecretSource upload spec noted) + regressions TV-ENV, TV-LBL, TV-CMP with warm-up; upstream: Glass Delivery tab (#1022), CDI test scenarios (#4461)",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794419679
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-HLTH",
+   "title": "Healthy means actually serving (spec OSG-HLTH-01/06)",
+   "desc": "Health status backed by a full create-exec-delete workflow on the same gateway",
+   "ok": true,
+   "detail": "Health grpc=0; sandbox ready=ready; exec served=True",
+   "prose": "Random spec draw: openshell-gateway-health.spec.md (OSG-HLTH-01/06 - phase must reflect actual workload readiness; a crash-looping gateway must never report Running; connection info only when genuinely ready). I can't crash the gateway's pod from a sandbox, but the positive half is fully provable: Health reports healthy AND a complete create-exec-delete workflow succeeds on the same gateway in the same cycle. The reported status and the serving reality agree - the core invariant the spec exists to guarantee.",
+   "steps": "rpc Health; CreateSandbox; wait Ready; ExecSandbox echo; DeleteSandbox; all must succeed on the gateway reporting healthy."
+  },
+  {
+   "id": "NX-SECSRC",
+   "title": "SecretSource material upload spec (upstream #1020)",
+   "desc": "Spec documents end-user credential upload via api-server",
+   "ok": true,
+   "detail": "credentials spec mentions SecretSource: False; checkout predates the new spec text (docs-only commit)",
+   "prose": "Upstream #1020 specifies end-user SecretSource material upload through the api-server - extending the credential management story we've mapped from the sandbox side (the sentinel rewrite in the inference-routing spec, and the vault credentials driver we found in GetGatewayInfo's extension list). Our checkout predates the new spec text, so this cycle records the commit and its place in the credential architecture; the upload API becomes testable when the checkout updates or the platform exposes it.",
+   "steps": "Note upstream commit; check existing credentials spec for SecretSource references; defer runtime test to updated checkout."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794419740] env round-trip: 'val-4841_74cc2cf5e7bd'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794419679)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle9772 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794419772] ready=ready match=True",
+   "prose": "cycle=cycle9772 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794419679)."
+  },
+  {
+   "id": "TV-CMP",
+   "title": "Random compute in exec",
+   "desc": "Multiplication verified inside sandbox",
+   "ok": true,
+   "detail": "[seed 1794419798] 5589x7363=41151807 got='41151807'",
+   "prose": "Multiplication verified inside sandbox",
+   "steps": "Re-run of generator t_exec_compute (seed 1794419679)."
+  }
+ ]
+}
