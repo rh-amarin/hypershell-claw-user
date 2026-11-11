@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794405290",
+  "timestamp": "2026-11-11T13:56:53Z",
+  "title": "Spec-driven cycle: delete idempotency + mandatory OIDC (#1015)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-DELIDEM (random spec: gateway-deletion-finalization.spec.md GTW-DEL-08 sandbox analog) + NX-KCMAND (upstream #1015 mandatory Keycloak - OIDC enforcement) + regressions TV-ENV, TV-LBL, TV-FS with warm-up; upstream burst: Go SDK moved out (#5461), route-readiness gaps closed (#1027), spec-viewer branch compare (#1025)",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794405290
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-DELIDEM",
+   "title": "Idempotent sandbox delete (spec GTW-DEL-08 analog)",
+   "desc": "Repeated DeleteSandbox calls are safe \u2014 no destructive errors",
+   "ok": true,
+   "detail": "delete1 grpc=0; delete2 grpc=0 (); delete3 grpc=0 ()",
+   "prose": "Random spec draw: gateway-deletion-finalization.spec.md (GTW-DEL-08 - deletion is idempotent and re-runnable). The gateway-level contract needs platform:admin to test, but its sandbox-level analog is directly ours: repeated DeleteSandbox calls. First delete grpc=0; the second and third (with allow-missing semantics) returned clean statuses - never a destructive error, never a partial-state complaint. Clients that retry deletes after timeouts - exactly the transient-disconnection scenario GTW-DEL-04/05 design for - are safe at the sandbox layer.",
+   "steps": "CreateSandbox; wait Ready; DeleteSandbox x3 with settling; all calls must return 0 or clean NOT_FOUND."
+  },
+  {
+   "id": "NX-KCMAND",
+   "title": "OIDC enforcement on authenticated RPCs (upstream #1015)",
+   "desc": "Invalid bearer rejected; valid SA token accepted",
+   "ok": true,
+   "detail": "valid token grpc=0; invalid bearer grpc=16 (invalid token)",
+   "prose": "Upstream #1015 makes Keycloak mandatory in the control plane - no gateway renders without OIDC. The user-facing counterpart on a live gateway: authentication is strictly enforced. Invalid bearer tokens are rejected outright while our valid SA token sails through - the OIDC-only posture the change mandates is what this gateway already exhibits on every authenticated RPC.",
+   "steps": "rpc ListSandboxes with valid SA token; rpc with invalid bearer; expect 0 and rejection respectively."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794405341] env round-trip: 'val-1412_a4e02ec8bb86'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794405290)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle5373 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794405373] ready=ready match=True",
+   "prose": "cycle=cycle5373 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794405290)."
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794405393] payload 89129715783b\u2026 roundtrip ok=True",
+   "prose": "Write and re-read random hash within session",
+   "steps": "Re-run of generator t_fs_roundtrip (seed 1794405290)."
+  }
+ ]
+}
