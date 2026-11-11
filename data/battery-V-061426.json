@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794377494",
+  "timestamp": "2026-11-11T06:14:12Z",
+  "title": "Spec-driven cycle: IdP CA trust chain + version stability",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-CA (random spec: openshell-gateway-tls.spec.md OSG-TLS-03 \u2014 IdP CA trust proven by token validation) + NX-GWVER (longitudinal version stability) + regressions TV-ENV, TV-LBL, TV-FS with warm-up",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794377494
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-CA",
+   "title": "Gateway trusts the IdP CA (spec OSG-TLS-03 chain)",
+   "desc": "SA JWTs issued by private-PKI keycloak validate at the gateway",
+   "ok": true,
+   "detail": "authenticated ListSandboxes grpc=0",
+   "prose": "Random spec draw (third honest hit on the TLS spec \u2014 this time OSG-TLS-03, the CA-bundle injection for private-PKI IdPs). The reconciler half (ConfigMap copy, /etc/pki mount, SSL_CERT_FILE) isn't visible from a sandbox, but the end-to-end proof is: our SA JWTs are issued by keycloak.hyp2 over TLS protected by the same OpenShell Sandbox CA we saw on the routes \u2014 and the gateway validates those tokens on every authenticated RPC. A gateway missing its CA bundle would reject all OIDC tokens; ours accepts them all cycle. The trust chain the spec builds is functioning.",
+   "steps": "rpc ListSandboxes with SA bearer (token minted from the private-PKI keycloak); grpc=0 proves gateway-side CA trust + token validation."
+  },
+  {
+   "id": "NX-GWVER",
+   "title": "Gateway version stability (longitudinal)",
+   "desc": "Same gateway version across every cycle since Nov 6",
+   "ok": true,
+   "detail": "current version: 0.1.6-rhaiv.2; expected (all prior cycles): 0.1.6-rhaiv.2",
+   "prose": "A longitudinal observation worth pinning in the catalog: this gateway has served every cycle since November 6 on version 0.1.6-rhaiv.2 \u2014 no upgrades, no restarts visible from the API surface, while the fleet around it (per the Nov 8 listing) runs seven versions including newer rhaiv.4 builds. Our test surface has been stable, which makes the catalog's pass/fail history directly comparable across all 32 runs.",
+   "steps": "GetGatewayInfo; compare version against the constant recorded in every prior cycle's metadata."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794377556] env round-trip: 'val-8112_14aca938a01d'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794377494)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle7588 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794377588] ready=ready match=True",
+   "prose": "cycle=cycle7588 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794377494)."
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794377620] payload d88ca16b6cf7\u2026 roundtrip ok=True",
+   "prose": "Write and re-read random hash within session",
+   "steps": "Re-run of generator t_fs_roundtrip (seed 1794377494)."
+  }
+ ]
+}
