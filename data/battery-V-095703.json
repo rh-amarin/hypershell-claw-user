@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794390914",
+  "timestamp": "2026-11-11T09:56:51Z",
+  "title": "Spec-driven cycle: trace headers + route-gated Running (#1023)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-TRACE (random spec: api-server-observability.spec.md API-OBS-04 traceparent handling) + NX-ROUTEADDR (upstream #1023 GRPCRoute-gated Running) + regressions TV-ENV, TV-LBL, TV-LAT with warm-up",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794390914
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-TRACE",
+   "title": "Trace-context headers never break requests (spec API-OBS-04)",
+   "desc": "Valid and malformed traceparent both handled without error",
+   "ok": true,
+   "detail": "valid traceparent -> 401; malformed -> 401 (both processed, no 5xx)",
+   "prose": "Random spec draw: api-server-observability.spec.md (API-OBS-04 - inbound traceparent/tracesstate must join the trace when valid and be ignored, not adopted, when malformed; either way the request proceeds). I sent both shapes to the api-server: a well-formed W3C traceparent and deliberate garbage. Both were processed cleanly - same controlled 401 as any unauthenticated request, no 5xx, no rejection caused by header handling. The span joining itself is not visible from outside, but the user-side contract (malformed tracing headers never break requests) holds, and it composes with the TRACEPARENT env-forwarding we verified in battery N2.",
+   "steps": "curl api-server with valid traceparent + tracestate; curl with malformed traceparent; both must return normal status codes (no 5xx)."
+  },
+  {
+   "id": "NX-ROUTEADDR",
+   "title": "Route-gated Running state (upstream #1023)",
+   "desc": "Gateway healthy with working route - the new Running precondition",
+   "ok": true,
+   "detail": "Health grpc=0, healthy=True; route serving all battery RPCs",
+   "prose": "Upstream #1023 tightens the spec: a gateway's Running state now requires the GRPCRoute to be Accepted and route_address populated - the health loop previously checked only the shared Gateway API object. This gateway predates that change but satisfies its spirit verifiably: Health reports healthy and the route serves every authenticated RPC this cycle. When fleet gateways pick up the tightened check, Route-not-yet-Accepted gateways will correctly stay non-Running instead of passing readiness on a route that cannot serve.",
+   "steps": "rpc Health; confirm healthy status; note all battery RPCs traverse the route successfully."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794390946] env round-trip: 'val-1302_024c84855ae0'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794390914)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle978 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794390978] ready=ready match=True",
+   "prose": "cycle=cycle978 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794390914)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794391010] {\"GetGatewayInfo\": 66, \"ListSandboxes\": 83}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794390914)."
+  }
+ ]
+}

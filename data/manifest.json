@@ -229,5 +229,12 @@
   "timestamp": "2026-11-11T06:14:12Z",
   "title": "Spec-driven cycle: IdP CA trust chain + version stability",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-095703.json",
+  "run": "battery-V-1794390914",
+  "timestamp": "2026-11-11T09:56:51Z",
+  "title": "Spec-driven cycle: trace headers + route-gated Running (#1023)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
