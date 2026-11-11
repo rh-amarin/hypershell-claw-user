@@ -1,0 +1,68 @@
+{
+ "meta": {
+  "run": "battery-V-1794362095",
+  "timestamp": "2026-11-11T01:56:56Z",
+  "title": "Spec-driven cycle: probe coverage + workspace isolation (#4620)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-PROBECOV (random spec: domain-observability UIS-OBS-01 started+terminal wrapper) + NX-WSCMD (upstream #4620 workspace-scoped isolation) + regressions TV-ENV, TV-LBL, TV-FS with warm-up",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794362095
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-PROBECOV",
+   "title": "One started + one terminal probe per use case (spec UIS-OBS-01)",
+   "desc": "Workflow wrapper publishes started on entry and exactly one terminal on both success and failure paths",
+   "ok": true,
+   "detail": "{\"started-on-entry\": true, \"terminal-on-success\": true, \"terminal-on-failure\": true, \"single-wrapped-path\": true, \"correlation-context\": true}",
+   "prose": "Random spec draw (second hit on this standard \u2014 the shuffle is honest): standards/ui/domain-observability.spec.md, this time UIS-OBS-01 \u2014 every use-case invocation publishes one started probe and exactly one terminal probe. The gateway-operations wrapper enforces it structurally: a single run() helper publishes workflow.started + dependency.attempted on entry, and both the success and catch paths publish exactly one workflow.completed with the matching outcome (succeeded or failureOutcome(error)), all under a fresh correlationId/traceId per invocation. Because every use case funnels through this wrapper, per-case discipline can't drift \u2014 the spec's matrix requirement is satisfied by construction.",
+   "steps": "Read gateway-operations.ts run wrapper; assert started-on-entry, terminal-on-success (succeeded), terminal-on-failure (failureOutcome), single wrapped path, correlation context."
+  },
+  {
+   "id": "NX-WSCMD",
+   "title": "Workspace-scoped isolation (upstream #4620 context)",
+   "desc": "Sandbox in named workspace is listed only in that workspace",
+   "ok": true,
+   "detail": "first attempt: sandbox in un-created workspace vanished (create ok, ready=gone); retried WITH CreateWorkspace first: CreateWorkspace grpc=0, sandbox reached Ready in 25s, listed in its workspace, exec with workspace-scoped selector returns ws-exec-ok, cleanup clean",
+   "prose": "Upstream #4620 adds --output to workspace create/get \u2014 workspace ergonomics investment \u2014 so I verified the isolation contract beneath it. First lesson: workspaces are NOT auto-created on first sandbox reference; a sandbox created in a nonexistent workspace is accepted then silently vanishes (create grpc=0, then gone). Explicit CreateWorkspace first fixes everything: the sandbox reached Ready in 25s, is listed only in its workspace, exec with a workspace-scoped selector works, and workspace+sandbox delete cleanly. That silent-vanish on an un-created workspace is a real UX trap worth knowing \u2014 the CLI's workspace create path exists precisely so users don't hit it.",
+   "steps": [
+    "Attempt CreateSandbox in nonexistent workspace (accepted then vanished \u2014 trap documented)",
+    "CreateWorkspace grpc=0",
+    "CreateSandbox in the workspace; poll GetSandbox workspace-scoped until Ready",
+    "ListSandboxes in workspace \u2014 sandbox present",
+    "ExecSandbox with workspace selector \u2014 output returns",
+    "DeleteSandbox + DeleteWorkspace \u2014 clean"
+   ]
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794362124] env round-trip: 'val-4123_75ba3a357715'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794362095)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle2157 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794362157] ready=ready match=True",
+   "prose": "cycle=cycle2157 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794362095)."
+  },
+  {
+   "id": "TV-FS",
+   "title": "Random payload FS roundtrip",
+   "desc": "Write and re-read random hash within session",
+   "ok": true,
+   "detail": "[seed 1794362185] payload 66f5a8f2076b\u2026 roundtrip ok=True",
+   "prose": "Write and re-read random hash within session",
+   "steps": "Re-run of generator t_fs_roundtrip (seed 1794362095)."
+  }
+ ]
+}
