@@ -257,5 +257,12 @@
   "timestamp": "2026-11-11T17:57:40Z",
   "title": "Spec-driven cycle: health-means-serving + SecretSource spec (#1020)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-181412.json",
+  "run": "battery-V-1794420718",
+  "timestamp": "2026-11-11T18:13:54Z",
+  "title": "Spec-driven cycle: BFF security posture (WEB-SEC-01)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]

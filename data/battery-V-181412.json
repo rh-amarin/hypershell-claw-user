@@ -1,0 +1,61 @@
+{
+ "meta": {
+  "run": "battery-V-1794420718",
+  "timestamp": "2026-11-11T18:13:54Z",
+  "title": "Spec-driven cycle: BFF security posture (WEB-SEC-01)",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)",
+  "battery": "NX-SPEC-CSP (random spec: web-console/architecture.spec.md WEB-SEC-01 strict CSP) + NX-COMPRESS (WEB-DPLY-02/WEB-BFF-01 compressed same-origin static) + regressions TV-ENV, TV-LBL, TV-LAT with warm-up",
+  "gateway_version": "0.1.6-rhaiv.2",
+  "image": "nvcr.io/nvidia/base/ubuntu:24.04",
+  "credentials": "hypershell SA (client-credentials, 5-min tokens)",
+  "transport": "gRPC-web over HTTPS (curl)",
+  "seed": 1794420718
+ },
+ "results": [
+  {
+   "id": "NX-SPEC-CSP",
+   "title": "Strict CSP posture in BFF (spec WEB-SEC-01)",
+   "desc": "helmet with default-src none, frame-ancestors none, self-only connect",
+   "ok": true,
+   "detail": "{\"helmet-registered\": true, \"default-src-none\": true, \"frame-ancestors-none\": true, \"connect-src-self\": true, \"base-uri-none\": true, \"form-action-self\": true}",
+   "prose": "Random spec draw (second hit on web-console architecture - now WEB-SEC-01, browser security headers). The BFF registers @fastify/helmet with a genuinely strict CSP: default-src 'none' as the baseline, frame-ancestors 'none' (no framing), connect-src and form-action locked to 'self', base-uri disabled. This is enforcing-mode strictness, not the report-only starting posture the spec permits initially - the console's security headers are production-grade in code.",
+   "steps": "Read bff/src/app.ts helmet config; assert default-src none, frame-ancestors none, self-scoped connect/form, base-uri none."
+  },
+  {
+   "id": "NX-COMPRESS",
+   "title": "BFF serves compressed static assets (WEB-DPLY-02/WEB-BFF-01)",
+   "desc": "compress + static registration in the same-origin BFF",
+   "ok": true,
+   "detail": "{\"compress-registered\": true, \"static-served\": true, \"same-origin-bff\": true}",
+   "prose": "Sibling check on the deployment requirements: the BFF registers @fastify/compress (response compression as WEB-DPLY-02 requires for assets) and serves the built static bundle itself via @fastify/static - which is the same-origin static+API service posture WEB-BFF-01 mandates. The browser talks to one origin; static assets compressed; the architecture diagram in the spec is what the code does.",
+   "steps": "Read bff/src/app.ts; assert compress and static registrations present."
+  },
+  {
+   "id": "TV-ENV",
+   "title": "Random env injection",
+   "desc": "Two random env vars verified in exec",
+   "ok": true,
+   "detail": "[seed 1794420780] env round-trip: 'val-9332_7a52f88cb0c5'",
+   "prose": "Two random env vars verified in exec",
+   "steps": "Re-run of generator t_env_injection (seed 1794420718)."
+  },
+  {
+   "id": "TV-LBL",
+   "title": "Random label selector",
+   "desc": "cycle=cycle801 matches only this sandbox",
+   "ok": true,
+   "detail": "[seed 1794420801] ready=ready match=True",
+   "prose": "cycle=cycle801 matches only this sandbox",
+   "steps": "Re-run of generator t_label_selector (seed 1794420718)."
+  },
+  {
+   "id": "TV-LAT",
+   "title": "RPC latency snapshot",
+   "desc": "GetGatewayInfo + ListSandboxes latency",
+   "ok": true,
+   "detail": "[seed 1794420833] {\"GetGatewayInfo\": 87, \"ListSandboxes\": 103}ms",
+   "prose": "GetGatewayInfo + ListSandboxes latency",
+   "steps": "Re-run of generator t_rpc_latency (seed 1794420718)."
+  }
+ ]
+}
