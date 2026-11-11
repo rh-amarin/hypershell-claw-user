@@ -208,5 +208,12 @@
   "timestamp": "2026-11-11T01:56:56Z",
   "title": "Spec-driven cycle: probe coverage + workspace isolation (#4620)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-021424.json",
+  "run": "battery-V-1794363087",
+  "timestamp": "2026-11-11T02:14:02Z",
+  "title": "Spec-driven cycle: mTLS-off routing mode + workspace members",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
