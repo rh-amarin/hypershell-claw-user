@@ -236,5 +236,12 @@
   "timestamp": "2026-11-11T09:56:51Z",
   "title": "Spec-driven cycle: trace headers + route-gated Running (#1023)",
   "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
+ },
+ {
+  "file": "data/battery-V-101528.json",
+  "run": "battery-V-1794391897",
+  "timestamp": "2026-11-11T10:15:12Z",
+  "title": "Spec-driven cycle: node count contract + sandbox CPU visibility",
+  "model": "GLM-5.3 (custom-api-enmaas-devshift-net/rits/zai-org/glm-5-3)"
  }
 ]
